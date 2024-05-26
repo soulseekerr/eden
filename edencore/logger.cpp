@@ -30,6 +30,7 @@ LoggerFile::LoggerFile(const LOG_LEVEL level, const std::string& fileName)
     if (!file_)
         throw LoggerException("Error: The log file was not opened.");
 
+    // File is opened
     file_ << "EDEN Log file." << std::endl;
 }
 

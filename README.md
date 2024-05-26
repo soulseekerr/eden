@@ -1,7 +1,21 @@
 eden project:
 
-edenbin used as binary
+edenbin: 
+    binary
+    test features
 
-edencore library
+edencore:
+    library
+    core classes and functions
+        thread safe singleton
+        logger manager
+        datetime
 
-edentests usin GoogleTest for unit testing
+
+edentests:
+    binary using GoogleTest
+    unit testing
+
+outputs:
+    build/Debug/bin
+    build/Debug/lib

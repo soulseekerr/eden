@@ -9,6 +9,7 @@
 
 namespace eden {
 
+// Different levels of logs
 enum class LOG_LEVEL {
     LOG_ERROR = -1,
     LOG_INFO = 4,
@@ -30,6 +31,7 @@ private:
     std::string message_;
 };
 
+// Abstract Logger class
 class Logger {
 
 public:
@@ -47,6 +49,7 @@ private:
     LOG_LEVEL     level_; 
 };
 
+// Simple Logger for console output 
 class LoggerConsole : public Logger {
 
 public:
@@ -57,6 +60,7 @@ public:
     void write(const std::string& s) override;
 };
 
+// Logger with simple file output 
 class LoggerFile : public Logger {
 
 public:
