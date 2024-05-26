@@ -52,12 +52,12 @@ int main() {
     logManager.logLevel(eden::LOG_LEVEL::LOG_INFO, "This is an example 3 of logLevel INFO with argument {}", 32);
     logManager.logLevel(eden::LOG_LEVEL::LOG_DEBUGVERBOSE, "This is an example 3b DEBUGVERBOSE not displayed of log Info with argument {}", -11);
     logManager.logLevel(eden::LOG_LEVEL::LOG_ERROR, "This is an ERROR example 4 ERROR with argument {}", -11);
-    logManager.logLevel(eden::LOG_LEVEL::LOG_WARN, "This is a WaRNING example 5 WARN with argument {}", 121);
+    logManager.logLevel(eden::LOG_LEVEL::LOG_WARNING, "This is a WaRNING example 5 WARN with argument {}", 121);
     logManager.logLevel(eden::LOG_LEVEL::LOG_DEBUG, "This is an example 6  of log DEBUG with argument {}", "DEbug session");
 
     logManager.logInfo("This is an example 7 of logInfo with argument {}", 55);
-    logManager.logWarn("This is an example 7 of logWarn with argument {}", 55);
-    logManager.logError("This is an example 7 of logError with argument {}", 55);
+    logManager.logWarn("This is an example 8 of logWarn with argument {}", 55);
+    logManager.logError("This is an example 9 of logError with argument {}", 55);
 
     return 0;
 }

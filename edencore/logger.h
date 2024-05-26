@@ -1,5 +1,6 @@
 #pragma once
 
+#include "log_levels.h"
 #include "singleton.h"
 #include <vector>
 #include <memory>
@@ -10,14 +11,21 @@
 
 namespace eden {
 
-// Different levels of logs
+// X Macro for log levels with color
 enum class LOG_LEVEL {
-    LOG_ERROR = 5,
-    LOG_INFO = 4,
-    LOG_WARN = 3,
-    LOG_DEBUG = 2,
-    LOG_DEBUGVERBOSE = 1
+#define X(name, color, str) name,
+    LOG_LEVELS
+#undef X
 };
+
+inline const char* getLogLevelString(LOG_LEVEL level) {
+    switch (level) {
+#define X(name, color, str) case LOG_LEVEL::name: return str;
+        LOG_LEVELS
+#undef X
+        default: return "UNKNOWN";
+    }
+}
 
 class LoggerException : public std::exception {
 public:
@@ -44,7 +52,7 @@ public:
 
     LOG_LEVEL getLevel() const { return level_; }
 
-    virtual void write(const std::string& s) = 0;
+    virtual void write(const LOG_LEVEL level, const std::string& s) = 0;
 
 private:
     LOG_LEVEL     level_; 
@@ -58,7 +66,7 @@ public:
 
     virtual ~LoggerConsole();
 
-    void write(const std::string& s) override;
+    void write(const LOG_LEVEL level, const std::string& s) override;
 };
 
 // Logger with simple file output 
@@ -69,7 +77,7 @@ public:
 
     virtual ~LoggerFile();
 
-    void write(const std::string& s) override;
+    void write(const LOG_LEVEL level, const std::string& s) override;
 
 private:
     std::ofstream   file_;
@@ -101,7 +109,7 @@ public:
         auto str = std::vformat(rt_fmt_str, std::make_format_args(args...));
         
         for (std::unique_ptr<Logger>& logger : loggers_) {
-            logger->write(str);
+            logger->write(LOG_LEVEL::LOG_INFO, str);
         }
     }
 
@@ -110,35 +118,9 @@ public:
 
         auto str = std::vformat(rt_fmt_str, std::make_format_args(args...));
 
-        std::string color_code;
-        std::string reset_code = "\033[0m";
-
-        switch (level) {
-            case LOG_LEVEL::LOG_DEBUG:
-                color_code = "\033[32m"; // Green
-                break;
-            case LOG_LEVEL::LOG_DEBUGVERBOSE:
-                color_code = "\033[32m"; // Green
-                break;
-            case LOG_LEVEL::LOG_INFO:
-                color_code = "\033[34m"; // Blue
-                break;
-            case LOG_LEVEL::LOG_ERROR:
-                color_code = "\033[31m"; // Red
-                break;
-            case LOG_LEVEL::LOG_WARN:
-                color_code = "\033[38;5;214m"; // Orange (approximate)
-                break;
-            default:
-                color_code = "";
-                break;
-        }
-
-        str = color_code + str + reset_code;
-
         for (std::unique_ptr<Logger>& logger : loggers_) {
             if (level >= logger->getLevel())
-                logger->write(str);
+                logger->write(level, str);
         }
     }
 
@@ -163,7 +145,7 @@ public:
     template<typename... Args>
     void logWarn(std::string_view rt_fmt_str, Args&&... args) {
 
-        logLevel(LOG_LEVEL::LOG_WARN, rt_fmt_str, std::forward<Args>(args)...);
+        logLevel(LOG_LEVEL::LOG_WARNING, rt_fmt_str, std::forward<Args>(args)...);
     }
 
     template<typename... Args>

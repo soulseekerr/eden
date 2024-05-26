@@ -14,8 +14,22 @@ LoggerConsole::LoggerConsole(const LOG_LEVEL level) : Logger(level) {}
 
 LoggerConsole::~LoggerConsole() {}
 
-void LoggerConsole::write(const std::string& s) {
-    std::cout << s << std::endl;
+void LoggerConsole::write(const LOG_LEVEL level, const std::string& s) {
+
+    std::string color_code;
+    std::string reset_code = "\033[0m";
+
+    // using the X Macro
+    switch (level) {
+#define X(name, color, str) case LOG_LEVEL::name: color_code = color; break;
+        LOG_LEVELS
+#undef X
+        default: color_code = ""; break;
+    }
+
+    auto str = color_code + "[" + getLogLevelString(level) + "] " + s + reset_code;
+
+    std::cout << str << std::endl;
 }
 
 LoggerFile::LoggerFile(const LOG_LEVEL level, const std::string& fileName) 
@@ -35,7 +49,7 @@ LoggerFile::LoggerFile(const LOG_LEVEL level, const std::string& fileName)
 
 LoggerFile::~LoggerFile() {}
 
-void LoggerFile::write(const std::string& s) {
+void LoggerFile::write(const LOG_LEVEL level, const std::string& s) {
     file_ << s << std::endl;
 }
 
