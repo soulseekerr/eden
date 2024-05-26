@@ -6,7 +6,8 @@
                 "${default}",
                 "${workspaceFolder}/edencore",
                 "/opt/homebrew/Cellar/fmt/10.1.1/include",
-                "${workspaceFolder}/build/_deps/googletest-src/googletest/include/gtest"
+                "${workspaceFolder}/build/_deps/googletest-src/googletest/include/gtest",
+                "${workspaceFolder}/build/_deps/googletest-src/googletest/include"
             ],
             "defines": [],
             "macFrameworkPath": [

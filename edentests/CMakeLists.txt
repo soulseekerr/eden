@@ -26,7 +26,7 @@ include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 
 add_library(libfmt SHARED IMPORTED)
 
-set(SOURCES_TEST hello_test.cpp)
+set(SOURCES_TEST hello_test.cpp logger_test.cpp datetime_test.cpp)
 
 find_package(fmt)
 
