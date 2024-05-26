@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 3.28.1)
+set(EDEN_TEST_NAME edentests)
+project(${EDEN_TEST_NAME})
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
+
+# Use google test for unit tests
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
+include_directories((BEFORE "./"))
+include_directories((BEFORE "../build/_deps/googletest-src/googletest/include/gtest"))
+include_directories((BEFORE "../edencore"))
+include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+
+add_library(libfmt SHARED IMPORTED)
+
+set(SOURCES_TEST hello_test.cpp)
+
+find_package(fmt)
+
+# Testing with google test
+enable_testing()
+add_executable(${EDEN_TEST_NAME} ${SOURCES_TEST})
+target_link_libraries(${EDEN_TEST_NAME} edencore fmt::fmt GTest::gtest_main)
+include(GoogleTest)
+gtest_discover_tests(${EDEN_TEST_NAME})

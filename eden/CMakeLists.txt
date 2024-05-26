@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.28.1)
+set(MY_APP_NAME eden)
+project(${MY_APP_NAME})
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
+include_directories((BEFORE "./"))
+include_directories((BEFORE "../build/_deps/googletest-src/googletest/include/gtest"))
+include_directories((BEFORE "../edencore"))
+include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+
+add_library(libfmt SHARED IMPORTED)
+
+set(SOURCES main.cpp)
+
+add_executable(${MY_APP_NAME} ${SOURCES})
+find_package(fmt)
+target_link_libraries(${MY_APP_NAME} PRIVATE edencore fmt::fmt)
+target_compile_features(${MY_APP_NAME} PRIVATE cxx_std_20)

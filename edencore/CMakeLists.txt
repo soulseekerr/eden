@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.28.1)
+set(MY_LIB_NAME edencore)
+project(${MY_LIB_NAME})
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
+
+include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+
+set(SOURCES hello.cpp logger.cpp)
+
+add_library(libfmt SHARED IMPORTED)
+add_library(${MY_LIB_NAME} SHARED ${SOURCES})
+find_package(fmt)
+target_link_libraries(${MY_LIB_NAME} PRIVATE fmt::fmt)
+target_compile_features(${MY_LIB_NAME} PRIVATE cxx_std_20)
