@@ -169,18 +169,45 @@ public:
         addYears(-years);
     }
 
+    void addBusinessDays(int days) {
+        while (days > 0) {
+            addDays(1);
+            if (isBusinessDay()) {
+                --days;
+            }
+        }
+    }
+
+    void subtractBusinessDays(int days) {
+        while (days > 0) {
+            subtractDays(1);
+            if (isBusinessDay()) {
+                --days;
+            }
+        }
+    }
+
+    bool isBusinessDay() const {
+        std::tm tm = toTm();
+        return tm.tm_wday != 0 && tm.tm_wday != 6; // 0 = Sunday, 6 = Saturday
+    }
+
 private:
+    // toTm Method: Converts the time_point_ to a std::tm structure.
     std::tm toTm() const {
         auto in_time_t = std::chrono::system_clock::to_time_t(time_point_);
         std::tm tm = *std::localtime(&in_time_t);
         return tm;
     }
 
+    // normalizeTm Method: Uses std::mktime to normalize the std::tm structure, 
+    // which handles overflow and underflow of months and years.
     void normalizeTm(std::tm& tm) const {
         // Normalize the time structure (e.g., handle overflow of months into years)
         std::mktime(&tm);
     }
 
+    // updateFromTm Method: Converts a normalized std::tm structure back to time_point_.
     void updateFromTm(const std::tm& tm) {
         // Convert the normalized tm back to time_point_
         std::time_t time = std::mktime(const_cast<std::tm*>(&tm));

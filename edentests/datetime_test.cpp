@@ -67,6 +67,16 @@ TEST(DateTimeTest, BasicAssertions) {
         EXPECT_EQ("202204", dt.year_month());
         EXPECT_EQ("2022-04", dt.year_month_h());
 
+        dt = eden::DateTime(2024, 5, 23);
+        dt.addBusinessDays(5); // Add five business days
+        std::cout << "After adding five business days: " << dt.toString() << std::endl;
+        EXPECT_EQ("2024-05-30", dt.year_month_day_h());
+
+        dt.subtractBusinessDays(5); // Subtract five business days
+        std::cout << "After subtracting five business days: " << dt.toString() << std::endl;
+        EXPECT_EQ("2024-05-23", dt.year_month_day_h());
+
+
     } catch (const std::invalid_argument& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
