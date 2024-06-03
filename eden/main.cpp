@@ -4,6 +4,8 @@
 #include "logger.h"
 #include "time_elapsed.h"
 #include "datetime.h"
+#include "models/hullwhite_1factor.h"
+
 #include <sstream>
 #include <format>
 #include <string>
@@ -35,6 +37,9 @@ int main() {
 
     logManager.logInfo("Starting log - {}", eden::DateTime().toString());
 
+    // edenanalytics::price_hullwhite1factor_vanilla_swap();
+
+    // edenanalytics::price_hullwhite3factor_vanilla_swap();
 
     logManager.logInfo("Ending log - {}", eden::DateTime().toString());
 

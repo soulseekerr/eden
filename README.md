@@ -24,6 +24,7 @@ outputs:
 includePath
 ${default}
 ${workspaceFolder}/edencore
+${workspaceFolder}/edenanalytics
 /opt/homebrew/Cellar/fmt/10.1.1/include
 ${workspaceFolder}/build/_deps/googletest-src/googletest/include/gtest
 

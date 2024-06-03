@@ -61,7 +61,8 @@
         "unordered_set": "cpp",
         "variant": "cpp",
         "vector": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "semaphore": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++20"
 }

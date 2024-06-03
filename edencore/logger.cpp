@@ -27,7 +27,9 @@ void LoggerConsole::write(const LOG_LEVEL level, const std::string& s) {
         default: color_code = ""; break;
     }
 
-    auto str = color_code + "[" + getLogLevelString(level) + "] " + s + reset_code;
+    auto level_code = std::format("[{}, {}] ", getLogLevelString(level), DateTime().timeToString());
+
+    auto str = color_code + level_code + s + reset_code;
 
     std::cout << str << std::endl;
 }
@@ -50,7 +52,7 @@ LoggerFile::LoggerFile(const LOG_LEVEL level, const std::string& fileName)
 LoggerFile::~LoggerFile() {}
 
 void LoggerFile::write(const LOG_LEVEL level, const std::string& s) {
-    file_ << s << std::endl;
+    file_ << DateTime().toString() << ": " << s << std::endl;
 }
 
 void LoggerManager::addLogger(std::unique_ptr<Logger> logger) {

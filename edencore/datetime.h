@@ -85,6 +85,18 @@ public:
         return oss.str();
     }
 
+     std::string timeToString() const {
+        auto in_time_t = std::chrono::system_clock::to_time_t(time_point_);
+
+        // seems not working - C++20 not setup coorectly?
+        // return std::format("{:%Y-%m-%d %H:%M:%S}", *std::localtime(&in_time_t));
+        std::tm tm = *std::localtime(&in_time_t);
+
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%H:%M:%S");
+        return oss.str();
+    }
+
     std::string year_month_day_h() const {
         const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(time_point_)};
         std::stringstream ss;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28.1)
-set(MY_LIB_NAME edencore)
+set(MY_LIB_NAME edenanalytics)
 project(${MY_LIB_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
@@ -8,8 +8,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+include_directories((BEFORE "../edencore"))
+include_directories((BEFORE "../edenanalytics"))
 
-set(SOURCES hello.cpp logger.cpp threadtask.cpp)
+set(SOURCES edenanalytics.cpp)
 
 add_library(libfmt SHARED IMPORTED)
 add_library(${MY_LIB_NAME} SHARED ${SOURCES})
