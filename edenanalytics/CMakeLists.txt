@@ -11,7 +11,7 @@ include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 include_directories((BEFORE "../edencore"))
 include_directories((BEFORE "../edenanalytics"))
 
-set(SOURCES edenanalytics.cpp)
+set(SOURCES edenanalytics.cpp task/computepresentvalue.cpp)
 
 add_library(libfmt SHARED IMPORTED)
 add_library(${MY_LIB_NAME} SHARED ${SOURCES})

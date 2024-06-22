@@ -1,6 +1,6 @@
 #pragma once
 
-/*
+/**
 Introduced in C++11 and significantly improved in C++20, 
 it provides a robust and flexible way to handle date and time.
 */
@@ -13,6 +13,7 @@ it provides a robust and flexible way to handle date and time.
 #include<array>
 #include<utility>
 #include<cstdlib>
+#include <iomanip>
 
 using namespace std::literals; // enables literal suffixes, e.g. 24h, 1ms, 1s.
 
@@ -78,6 +79,8 @@ public:
 
         // seems not working - C++20 not setup coorectly?
         // return std::format("{:%Y-%m-%d %H:%M:%S}", *std::localtime(&in_time_t));
+
+        // Version for C++17
         std::tm tm = *std::localtime(&in_time_t);
 
         std::ostringstream oss;
@@ -143,66 +146,27 @@ public:
         std::cout << "Current time: " << std::ctime(&now_time) << std::endl;
     }
 
-    void addSeconds(int seconds) {
-        time_point_ += std::chrono::seconds(seconds);
-    }
+    void addSeconds(int seconds);
 
-    void subtractSeconds(int seconds) {
-        time_point_ -= std::chrono::seconds(seconds);
-    }
+    void subtractSeconds(int seconds);
 
-    void addDays(int days) {
-        time_point_ += std::chrono::hours(days * 24);
-    }
+    void addDays(int days);
 
-    void subtractDays(int days) {
-        time_point_ -= std::chrono::hours(days * 24);
-    }
+    void subtractDays(int days);
 
-    void addMonths(int months) {
-        std::tm tm = toTm();
-        tm.tm_mon += months;
-        normalizeTm(tm);
-        updateFromTm(tm);
-    }
+    void addMonths(int months);
 
-    void subtractMonths(int months) {
-        addMonths(-months);
-    }
+    void subtractMonths(int months);
 
-    void addYears(int years) {
-        std::tm tm = toTm();
-        tm.tm_year += years;
-        normalizeTm(tm);
-        updateFromTm(tm);
-    }
+    void addYears(int years);
 
-    void subtractYears(int years) {
-        addYears(-years);
-    }
+    void subtractYears(int years);
 
-    void addBusinessDays(int days) {
-        while (days > 0) {
-            addDays(1);
-            if (isBusinessDay()) {
-                --days;
-            }
-        }
-    }
+    void addBusinessDays(int days);
 
-    void subtractBusinessDays(int days) {
-        while (days > 0) {
-            subtractDays(1);
-            if (isBusinessDay()) {
-                --days;
-            }
-        }
-    }
+    void subtractBusinessDays(int days);
 
-    bool isBusinessDay() const {
-        std::tm tm = toTm();
-        return tm.tm_wday != 0 && tm.tm_wday != 6; // 0 = Sunday, 6 = Saturday
-    }
+    bool isBusinessDay() const;
 
 private:
     // toTm Method: Converts the time_point_ to a std::tm structure.

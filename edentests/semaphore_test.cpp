@@ -48,4 +48,10 @@ TEST(SemaphoreTest, BasicAssertions) {
     for (auto i = 0; i < totalTaskCount; i++) {
         pool[i].join();
     }
+
+    // Testing invoke function.
+    std::cout << "Invoking TaskTest" << std::endl;
+    invoke("TaskTest", &taskSync, function_computation_heavy);
+    std::cout << "Invoking TaskTest done" << std::endl;
+
 }
