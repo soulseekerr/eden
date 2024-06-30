@@ -28,6 +28,17 @@ struct st_time_elapsed {
             << (end - start) / 1s << "s.\n";  // using milliseconds and seconds accordingly
     }
 
+    void time_elapsed_nano() {
+        
+        const auto end = std::chrono::steady_clock::now();
+
+        auto value = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+
+        std::cout << "time elapsed: " << value 
+            << " = " << (end - start) / 1ms << "ms = "
+            << (end - start) / 1s << "s." <<  std::endl;
+    }
+
     void time_elapsed_seconds() {
         
         const auto end = std::chrono::steady_clock::now();

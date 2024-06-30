@@ -9,7 +9,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 
-set(SOURCES hello.cpp logger.cpp datetime.cpp threadtask.cpp data_attributes.cpp)
+set(SOURCES hello.cpp logger.cpp datetime.cpp threadtask.cpp data_attributes.cpp sort.cpp redblacktree.cpp)
 
 add_library(libfmt SHARED IMPORTED)
 add_library(${MY_LIB_NAME} SHARED ${SOURCES})

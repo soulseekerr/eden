@@ -1,4 +1,6 @@
 
+#include "core/edenanalytics.h"
+
 #include "models/hullwhite_1factor.h"
 #include "models/hullwhite_3factor.h"
 #include "pricers/swap_pricer.h"
@@ -8,3 +10,7 @@
 #include "core/creditcurve.h"
 #include "task/taskparameters.h"
 #include "task/computecva.h"
+
+void print_version() {
+    std::cout << eden::analytics::getVersion() << std::endl;
+}

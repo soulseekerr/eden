@@ -1,0 +1,28 @@
+# Module vfeden written in python for access from the service.
+# Wrapper of C++ features
+
+# Needs virtual env to be setup beforehand
+python -m env myenv 
+pip list
+pip install setuptools
+pip install --upgrade pip
+
+
+# Build the module vfeden 
+python setup.py build
+python setup.py install # but this seems deprecated, advised to use pip tools
+
+pip list
+
+pip uninstall vfeden
+
+# To start/stop the service
+python edenqueryd start
+python edenqueryd stop
+
+ps aux | grep edenquery
+
+cat /tmp/edenquerydaemon.pid
+cat /tmp/edenquerydaemon.log
+
+tail -n 20 -f cat/tmp/edenquerydaemon.log

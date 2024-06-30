@@ -35,3 +35,8 @@
 build/**
 
 *.log
+*.pyc
+
+edenpy/*.egg-info
+edenpy/dist/**
+edenpy/myenv/**

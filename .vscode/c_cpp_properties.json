@@ -8,7 +8,9 @@
                 "${workspaceFolder}/edenanalytics",
                 "/opt/homebrew/Cellar/fmt/10.1.1/include",
                 "${workspaceFolder}/build/_deps/googletest-src/googletest/include/gtest",
-                "${workspaceFolder}/build/_deps/googletest-src/googletest/include"
+                "${workspaceFolder}/build/_deps/googletest-src/googletest/include",
+                "/opt/homebrew/opt/python/Frameworks/Python.framework/Headers",
+                "${workspaceFolder}"
             ],
             "defines": [],
             "macFrameworkPath": [
