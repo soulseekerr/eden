@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28.1)
-set(MY_LIB_NAME edencore)
+set(MY_LIB_NAME edengodot)
 project(${MY_LIB_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
@@ -9,14 +9,14 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 
-set(SOURCES hello.cpp 
-    logger.cpp 
-    datetime.cpp 
-    threadtask.cpp 
-    data_attributes.cpp 
-    sort.cpp 
-    redblacktree.cpp 
-    hashset.cpp)
+set(SOURCES gd_classes.cpp 
+    gd_errors.cpp 
+    gd_hashset.cpp 
+    gd_logger.cpp 
+    gd_memory.cpp 
+    gd_os.cpp 
+    gd_string.cpp 
+    gd_mutex.cpp)
 
 add_library(libfmt SHARED IMPORTED)
 add_library(${MY_LIB_NAME} SHARED ${SOURCES})

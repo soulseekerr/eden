@@ -6,4 +6,5 @@ add_subdirectory(edenanalytics)
 add_subdirectory(eden)
 add_subdirectory(edentests)
 add_subdirectory(edendaemon)
+add_subdirectory(godot)
 # add_subdirectory(edenpy)  # is built independently using setuptools

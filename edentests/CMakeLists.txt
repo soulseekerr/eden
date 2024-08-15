@@ -23,6 +23,7 @@ include_directories((BEFORE "./"))
 include_directories((BEFORE "../build/_deps/googletest-src/googletest/include/gtest"))
 include_directories((BEFORE "../edencore"))
 include_directories((BEFORE "../edenanalytics"))
+include_directories((BEFORE "../godot"))
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 
 add_library(libfmt SHARED IMPORTED)
@@ -33,13 +34,14 @@ set(SOURCES_TEST
     datetime_test.cpp 
     swap_test.cpp 
     graph_test.cpp
-    semaphore_test.cpp)
+    semaphore_test.cpp
+    hashset_test.cpp)
 
 find_package(fmt)
 
 # Testing with google test
 enable_testing()
 add_executable(${EDEN_TEST_NAME} ${SOURCES_TEST})
-target_link_libraries(${EDEN_TEST_NAME} edencore edenanalytics fmt::fmt GTest::gtest_main)
+target_link_libraries(${EDEN_TEST_NAME} edencore edenanalytics edengodot fmt::fmt GTest::gtest_main)
 include(GoogleTest)
 gtest_discover_tests(${EDEN_TEST_NAME})
