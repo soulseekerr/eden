@@ -16,7 +16,7 @@ struct ITreeNodeDoStuff {
     virtual int DoOtherStuff() = 0;
 };
 
-// TODO add compostion with Strategies = computation task 
+// TODO add composition with Strategies = computation task 
 class TreeNode : public ITreeNodeDoStuff {
 public:
     TreeNode(const std::string& name) : name_(name) {}

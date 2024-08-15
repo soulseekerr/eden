@@ -5,7 +5,10 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import signal
 
+import requests
+
 import edenpy
+# import edenpy.myenv
 
 EDEN_LOG_FILE = '/tmp/edenquerydaemon.log'
 EDEN_PID_FILE = '/tmp/edenquerydaemon.pid'
@@ -18,6 +21,63 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(log_handler)
 # logging.basicConfig(filename='/tmp/edenquerydaemon.log', level=logging.INFO, format='%(asctime)s %(message)s')
+
+
+class EdenDataLoader():
+
+    @staticmethod
+    def load_task_definitions():
+        try:
+            url = 'http://127.0.0.1:8000/v1/api/apiGetTaskDefinitions'
+            print(url)
+            response = requests.get(url)
+            data = response.json()
+            return data
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}")
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request error occurred: {req_err}")
+        except ValueError as json_err:
+            print(f"JSON decode error: {json_err}")
+
+        return None
+    
+    @staticmethod
+    def load_tasks_from_graph(name: str):
+        try:
+            url = 'http://127.0.0.1:8000/v1/api/apiGetTaskFromGraph'
+            url = f'{url}?name={name}'
+            print(url)
+            response = requests.get(url)
+            data = response.json()
+            return data
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}")
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request error occurred: {req_err}")
+        except ValueError as json_err:
+            print(f"JSON decode error: {json_err}")
+
+        return None
+
+    @staticmethod
+    def load_workflow_tasks(status: str):
+        url = 'http://127.0.0.1:8000/v1/api/apiGetWorkflowTasks'
+        url = f'{url}?task_status={status}'
+        logging.info(url)
+        try:
+            response = requests.get(url)
+            data = response.json()
+            return data
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}")
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request error occurred: {req_err}")
+        except ValueError as json_err:
+            print(f"JSON decode error: {json_err}")
+
+        return None
+
 
 def daemonize():
     try:
@@ -57,15 +117,50 @@ def signal_handler(signum, frame):
     os.remove(EDEN_PID_FILE)
     sys.exit(0)
 
+def process_task(task):
+    """
+    wTaskID': 12345, 
+    'task_id': 1, 
+    'taskStatus_id': 'Waiting', 
+    'priority': 4000, 
+    'creationDate': '2024-07-16T21:39:49.029589Z', 
+    'lastUpdateDate': '2024-07-16T21:39:49.029592Z'
+    """
+    # name = task_data['name']
+    # desc = task_data['desc']
+    logging.info(task)
+    # edenpy.calibrate()
+
 def do_something():
+    logging.info(f"edenquery daemon is alive!")
     logging.info(f"Eden Py: {edenpy.edenpy_version()}")
     logging.info(f"Eden Core: {edenpy.eden_core_version()}")
     logging.info(f"Eden Analytics: {edenpy.eden_analytics_version()}")
 
-    while True:
-        logging.info(f"edenquery daemon is alive! (f={edenpy.factorial(10)})")
-        time.sleep(10)
+    # print('Loading Task Definitions')
+    # data = EdenDataLoader.load_task_definitions()
+    # if data is not None:
+    #     [logging.info(x) for x in data['response']]
+    # else:
+    #     logging.info("No task definitions found")
+    
+    # data = EdenDataLoader.load_tasks_from_graph('Test Graph PV Calculation')
+    # if data is not None:
+    #     process_graph(data)
+    # else:
+    #     logging.info("No requests found")
 
+    while True:
+        logging.info("Waiting for requests...")
+        time.sleep(1)
+
+        data = EdenDataLoader.load_workflow_tasks('Waiting')
+        if data is not None:
+            [process_task(task) for task in data['response']]
+        else:
+            logging.info("No requests found")
+
+# Main entry of the daemon
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print(f"Usage: {sys.argv[0]} start|stop")
