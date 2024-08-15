@@ -101,10 +101,15 @@ public:
     }
 
     std::string year_month_day_h() const {
-        const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(time_point_)};
-        std::stringstream ss;
-        ss << ymd;
-        return ss.str();
+        auto in_time_t = std::chrono::system_clock::to_time_t(time_point_);
+        std::tm tm = *std::localtime(&in_time_t);
+
+        // this does not seem to return the correct date
+        // const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(time_point_)};
+
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%Y-%m-%d");
+        return oss.str();
     }
 
     std::string year_month_day() const {
