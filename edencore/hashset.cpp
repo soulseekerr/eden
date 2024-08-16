@@ -52,7 +52,7 @@ bool HashSet::insert(uint64_t key) {
     
     while (current != nullptr) {
         if (current->key == key) {
-            std::cout << "Key " << key << " already exists. Insertion skipped." << std::endl;
+            // std::cout << "Key " << key << " already exists. Insertion skipped." << std::endl;
             return false;
         }
         current = current->next.get();
@@ -62,7 +62,7 @@ bool HashSet::insert(uint64_t key) {
     newNode->next = std::move(buckets[hashValue]);
     buckets[hashValue] = std::move(newNode);
     ++elementCount;
-    std::cout << "Key " << key << " inserted." << std::endl;
+    // std::cout << "Key " << key << " inserted." << std::endl;
     return true;
 }
 
@@ -73,13 +73,13 @@ bool HashSet::search(uint64_t key) {
     
     while (current != nullptr) {
         if (current->key == key) {
-            std::cout << "Key " << key << " found." << std::endl;
+            // std::cout << "Key " << key << " found." << std::endl;
             return true;
         }
         current = current->next.get();
     }
     
-    std::cout << "Key " << key << " not found." << std::endl;
+    // std::cout << "Key " << key << " not found." << std::endl;
     return false;
 }
 
@@ -96,7 +96,7 @@ bool HashSet::remove(uint64_t key) {
             } else {
                 prev->next = std::move(current->next);
             }
-            std::cout << "Key " << key << " removed." << std::endl;
+            // std::cout << "Key " << key << " removed." << std::endl;
             --elementCount;
             return true;
         }
@@ -170,4 +170,28 @@ void example_hashset_t() {
     stringHashSet.insert("hello");
     stringHashSet.insert("world");
     stringHashSet.display();
+
+    // HashSet using default load factor 0.75
+    HashSet_t<MarketDataExample, MarketDataExampleHash> marketDataSet;
+    
+    // Create some MarketData instances
+    MarketDataExample data1(1, 100.0);
+    MarketDataExample data2(2, 150.0);
+    MarketDataExample data3(3, 200.0);
+    
+    // Insert MarketData instances into HashSet
+    marketDataSet.insert(data1);
+    marketDataSet.insert(data2);
+    marketDataSet.insert(data3);
+    
+    // Display contents
+    marketDataSet.display();
+    
+    // Search for an item
+    marketDataSet.search(MarketDataExample(2, 150.0)); // Should find
+    marketDataSet.search(MarketDataExample(4, 250.0)); // Should not find
+    
+    // Remove an item
+    marketDataSet.remove(MarketDataExample(1, 100.0));
+    marketDataSet.display();
 }

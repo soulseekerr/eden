@@ -8,6 +8,44 @@
 #include <cstdint>
 #include <array>
 
+
+#include <iostream>
+#include <memory>
+#include <array>
+#include <functional>
+#include <cstdint>
+
+// Definition of MarketData class
+class MarketDataExample {
+public:
+    MarketDataExample(uint64_t id, double price) : id(id), price(price) {}
+
+    uint64_t getId() const { return id; }
+    double getPrice() const { return price; }
+
+    // Overload equality operator
+    bool operator==(const MarketDataExample& other) const {
+        return id == other.id;
+    }
+
+    // Overload stream insertion operator for easy display
+    friend std::ostream& operator<<(std::ostream& os, const MarketDataExample& data) {
+        os << "MarketData{id=" << data.id << ", price=" << data.price << "}";
+        return os;
+    }
+
+private:
+    uint64_t id;
+    double price;
+};
+
+struct MarketDataExampleHash {
+    std::size_t operator()(const MarketDataExample& data) const {
+        return std::hash<uint64_t>()(data.getId()); // Hash based on ID
+    }
+};
+
+
 // Example Usage
 void example_hashset();
 
@@ -90,7 +128,7 @@ public:
     // Insert Key
     bool insert(const T& key) {    
         if (elementCount > bucketCount * loadFactor) {
-            resize(); // Resize if load factor > 0.7
+            resize(); // Resize if load factor > x
         }
 
         uint64_t hashValue = getHash(key);
@@ -98,7 +136,7 @@ public:
     
         while (current != nullptr) {
             if (keyEqual(current->key, key)) {
-                std::cout << "Key already exists. Insertion skipped." << std::endl;
+                // std::cout << "Key already exists. Insertion skipped." << std::endl;
                 return false;
             }
             current = current->next.get();
@@ -108,7 +146,7 @@ public:
         newNode->next = std::move(buckets[hashValue]);
         buckets[hashValue] = std::move(newNode);
         ++elementCount;
-        std::cout << "Key inserted." << std::endl;
+        // std::cout << "Key inserted." << std::endl;
         return true;
     }
 
@@ -119,13 +157,13 @@ public:
         
         while (current != nullptr) {
             if (keyEqual(current->key, key)) {
-                std::cout << "Key found." << std::endl;
+                // std::cout << "Key found." << std::endl;
                 return true;
             }
             current = current->next.get();
         }
         
-        std::cout << "Key not found." << std::endl;
+        // std::cout << "Key not found." << std::endl;
         return false;
     }
 
@@ -142,14 +180,14 @@ public:
                 } else {
                     prev->next = std::move(current->next);
                 }
-                std::cout << "Key removed." << std::endl;
+                // std::cout << "Key removed." << std::endl;
                 --elementCount;
                 return true;
             }
             prev = current;
             current = current->next.get();
         }
-        std::cout << "Key not found. Removal skipped." << std::endl;
+        // std::cout << "Key not found. Removal skipped." << std::endl;
         return false;
     }
 
@@ -204,7 +242,7 @@ private:
     double loadFactor; // Load factor variable
 
     // Static constexpr default load factor
-    static constexpr double defaultLoadFactor = 0.75;
+    static constexpr double defaultLoadFactor = 0.7;
 
     static constexpr std::array<uint64_t, 33> primeSizes {
         11ULL, 23ULL, 47ULL, 97ULL, 199ULL, 409ULL, 823ULL, 1741ULL, 3469ULL, 6949ULL, 14033ULL,
