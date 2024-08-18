@@ -35,7 +35,8 @@ set(SOURCES_TEST
     swap_test.cpp 
     graph_test.cpp
     semaphore_test.cpp
-    hashset_test.cpp)
+    hashset_test.cpp
+    pair_test.cpp)
 
 find_package(fmt)
 

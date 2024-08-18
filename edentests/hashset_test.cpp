@@ -13,37 +13,6 @@
 
 
 TEST(HashSetTest, BasicAssertions) {
-    // HashSet<int> hs1;
-    // hs1.insert(1234);
-
-    HashSet hashSet;
-    
-    // Insert elements
-    hashSet.insert(15);
-    hashSet.insert(25);
-    hashSet.insert(35);
-    hashSet.insert(20);
-    hashSet.insert(30);
-    hashSet.insert(25);
-    hashSet.insert(100);
-    hashSet.insert(200);
-    hashSet.insert(300);
-    hashSet.insert(400);
-    hashSet.insert(500);
-    
-    // Display contents
-    hashSet.display();
-    
-    // Search for elements
-    hashSet.search(20);
-    hashSet.search(100);
-    
-    // Remove elements
-    hashSet.remove(25);
-    hashSet.remove(100);
-    
-    // Display contents after removal
-    hashSet.display();
 
     std::cout << "Testing HashSet_t" << std::endl;
 

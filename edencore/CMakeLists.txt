@@ -16,7 +16,9 @@ set(SOURCES hello.cpp
     data_attributes.cpp 
     sort.cpp 
     redblacktree.cpp 
-    hashset.cpp)
+    hashset.cpp
+    vector.cpp
+    pair.cpp)
 
 add_library(libfmt SHARED IMPORTED)
 add_library(${MY_LIB_NAME} SHARED ${SOURCES})

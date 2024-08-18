@@ -10,7 +10,7 @@ void function_computation_heavy(const std::string& name, eden::ThreadSignal* s) 
     std::cout << "[started] function_computation_heavy()." << std::endl;
     
     using namespace std::literals;
-    std::this_thread::sleep_for(5s);
+    std::this_thread::sleep_for(2s);
 
     std::cout << "[ended] function_computation_heavy()." << std::endl;
 

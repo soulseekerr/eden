@@ -8,7 +8,6 @@
 #include <cstdint>
 #include <array>
 
-
 #include <iostream>
 #include <memory>
 #include <array>
@@ -43,48 +42,6 @@ struct MarketDataExampleHash {
     std::size_t operator()(const MarketDataExample& data) const {
         return std::hash<uint64_t>()(data.getId()); // Hash based on ID
     }
-};
-
-
-// Example Usage
-void example_hashset();
-
-// Node structure for the linked list in each bucket
-struct Node {
-    uint64_t key;
-    std::unique_ptr<Node> next;
-    
-    Node(uint64_t k) : key(k), next(nullptr) {}
-};
-
-// HashSet class
-class HashSet {
-public:
-    HashSet();
-    ~HashSet() = default;
-
-    bool insert(uint64_t key);
-    bool search(uint64_t key);
-    bool remove(uint64_t key);
-    void display();
-
-private:
-    uint32_t getHash(uint64_t key);
-    void resize();
-    int getNextPrime();
-
-    uint64_t bucketCount;
-    uint64_t elementCount;
-    std::unique_ptr<std::unique_ptr<Node>[]> buckets;
-
-    std::vector<uint64_t> primeSizes {
-        11, 23, 47, 97, 199, 409, 823, 1741, 3469, 6949, 14033,
-        28067, 56103, 112213, 224467, 448949, 897919, 1795847,
-        3591703, 7183417, 14366889, 28733777, 57467521, 114935069,
-        229870171, 459740359, 919480687, 1838961469, 3677922933,
-        7355845867, 14711691733, 29423383469, 58846766941, 117693533881
-    }; // Example primes
-    int currentPrimeIndex;
 };
 
 // Example Usage
