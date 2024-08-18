@@ -36,13 +36,24 @@ set(SOURCES_TEST
     graph_test.cpp
     semaphore_test.cpp
     hashset_test.cpp
-    pair_test.cpp)
+    pair_test.cpp
+    vector_test.cpp)
 
 find_package(fmt)
 
 # Testing with google test
 enable_testing()
 add_executable(${EDEN_TEST_NAME} ${SOURCES_TEST})
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message("Building in Debug mode")
+    target_compile_definitions(${EDEN_TEST_NAME} PRIVATE DEBUG_MODE)
+    target_compile_options(${EDEN_TEST_NAME} PRIVATE -g -O0)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message("Building in Release mode")
+    target_compile_options(${EDEN_TEST_NAME} PRIVATE -O3)  # Example flags for GCC/Clang
+endif()
+
 target_link_libraries(${EDEN_TEST_NAME} edencore edenanalytics edengodot fmt::fmt GTest::gtest_main)
 include(GoogleTest)
 gtest_discover_tests(${EDEN_TEST_NAME})

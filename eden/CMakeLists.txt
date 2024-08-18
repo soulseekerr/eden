@@ -19,6 +19,16 @@ add_library(libfmt SHARED IMPORTED)
 set(SOURCES main.cpp)
 
 add_executable(${MY_APP_NAME} ${SOURCES})
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message("Building in Debug mode")
+    target_compile_definitions(${MY_APP_NAME} PRIVATE DEBUG_MODE)
+    target_compile_options(${MY_APP_NAME} PRIVATE -g -O0)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message("Building in Release mode")
+    target_compile_options(${MY_APP_NAME} PRIVATE -O3)  # Example flags for GCC/Clang
+endif()
+
 find_package(fmt)
 target_link_libraries(${MY_APP_NAME} PRIVATE edencore edenanalytics fmt::fmt)
 target_compile_features(${MY_APP_NAME} PRIVATE cxx_std_20)

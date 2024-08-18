@@ -16,6 +16,11 @@ TEST(HashSetTest, BasicAssertions) {
 
     std::cout << "Testing HashSet_t" << std::endl;
 
+#ifdef DEBUG_MODE
+    std::cout << "Debug mode is enabled!" << std::endl;
+    // Add any additional debug-specific code here
+#endif
+
     HashSet_t<uint64_t> hs2;
 
     hs2.insert(1436596);
@@ -157,6 +162,10 @@ void benchmark_hashset_custom() {
 }
 
 TEST(HashSetBenchmark, BasicAssertions) {
+
+    // this is a comparison ok, but based on random data
+    // the hash function will be good if relevant with the data.
+    // so it may not be the best choice in terms of perf for the test here.
 
     benchmark_hashset_stl();
 

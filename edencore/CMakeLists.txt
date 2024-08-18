@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.28.1)
 set(MY_LIB_NAME edencore)
 project(${MY_LIB_NAME})
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
@@ -18,6 +19,7 @@ set(SOURCES hello.cpp
     redblacktree.cpp 
     hashset.cpp
     vector.cpp
+    vector_safe.cpp
     pair.cpp)
 
 add_library(libfmt SHARED IMPORTED)
@@ -26,7 +28,10 @@ add_library(${MY_LIB_NAME} SHARED ${SOURCES})
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Building in Debug mode")
     target_compile_definitions(${MY_LIB_NAME} PRIVATE DEBUG_MODE)
-    target_compile_options(${MY_LIB_NAME} PRIVATE -g -O0)  # Example flags for GCC/Clang
+    target_compile_options(${MY_LIB_NAME} PRIVATE -g -O0)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message("Building in Release mode")
+    target_compile_options(${MY_LIB_NAME} PRIVATE -O3)  # Example flags for GCC/Clang
 endif()
 
 find_package(fmt)

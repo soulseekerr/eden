@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <memory>
 #include <iterator>
+#include <algorithm> // For std::copy
+#include <numeric>   // For std::accumulate
 
 namespace eden {
 
@@ -12,7 +14,19 @@ void example_vector();
 
 template <class T>
 class Vector_t {
+private:
+    mutable T* ptr_;
+    uint32_t capacity_;
+    uint32_t num_elements_;
+
+    uint8_t capacityMethod_;
+
 public:
+    static constexpr uint32_t defaultCapacity = 1741;
+
+    static constexpr uint8_t defaultCapacityMethod = 1; // Double
+    static constexpr uint8_t logCapacityMethod = 2; // Log
+
     constexpr explicit Vector_t(const uint32_t capacity = defaultCapacity, const uint8_t capacityMethod = defaultCapacityMethod) 
         : ptr_(new T[capacity]), capacity_(capacity), num_elements_(0), capacityMethod_(capacityMethod) {
     }
@@ -86,19 +100,15 @@ public:
     }
 
     void push_back(const T& key) {
-        if (capacityMethod_ == logCapacityMethod) {
-
-        }
-
         if (num_elements_ >= capacity_) {
-            reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+            resize();
         }
         ptr_[num_elements_++] == key;
     }
 
     void push_back(T&& value) {
         if (num_elements_ >= capacity_) {
-            reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+            resize();
         }
         ptr_[num_elements_++] = std::move(value);
     }
@@ -132,7 +142,6 @@ public:
 
     void reserve(uint32_t newCapacity) {
         if (newCapacity <= capacity_) return;
-        
         reallocate(newCapacity);
     }
 
@@ -148,25 +157,103 @@ public:
 
     void shrink_to_fit() {
         if (num_elements_ >= capacity_) return;
-
         reallocate(num_elements_);
+    }
+
+    // Compute the average of elements
+    double average() const {
+        if (num_elements_ == 0) {
+            throw std::runtime_error("Cannot compute average of an empty vector");
+        }
+        double sum = std::accumulate(begin(), end(), 0.0);
+        return sum / num_elements_;
+    }
+
+    // Compute the median of elements
+    double median() const {
+        if (num_elements_ == 0) {
+            throw std::runtime_error("Cannot compute median of an empty vector");
+        }
+        std::vector<T> sorted(begin(), end());
+        std::sort(sorted.begin(), sorted.end());
+
+        size_t middle = num_elements_ / 2;
+        if (num_elements_ % 2 == 0) {
+            return (sorted[middle - 1] + sorted[middle]) / 2.0;
+        } else {
+            return sorted[middle];
+        }
     }
 
     // Iterators
     T* begin() { return ptr_; }
     T* end() { return ptr_ + num_elements_; }
 
-    static constexpr uint32_t defaultCapacity = 1741;
-
-    static constexpr uint8_t defaultCapacityMethod = 1; // Double
-    static constexpr uint8_t logCapacityMethod = 2; // Log
+    const T* begin() const { return ptr_; }  // Const version
+    const T* end() const { return ptr_ + num_elements_; }  // Const version
 
 private:
-    mutable T* ptr_;
-    uint32_t capacity_;
-    uint32_t num_elements_;
+    // Resize based on capacity method
+    void resize() {
+        uint32_t newCapacity;
+        if (capacityMethod_ == logCapacityMethod) {
+            newCapacity = capacity_ + std::log2(capacity_);
+        } else {
+            newCapacity = capacity_ == 0 ? 1 : capacity_ * 2;
+        }
+        reserve(newCapacity);
+    }
+};
 
-    uint8_t capacityMethod_;
+
+// class template for Vector using Pointer Storage - incomplete implementation
+/**
+ * Use when:
+ * The objects are large or complex and have significant construction or destruction overhead.
+ * You need to manage the lifetime of the objects independently of the Vector.
+ * You need to store polymorphic objects or objects of varying sizes.
+ * You require more control over memory allocation and deallocation.
+ * 
+ */
+template <typename T>
+class VectorP {
+public:
+    VectorP() : data(nullptr), currentSize(0), currentCapacity(0) {}
+    explicit VectorP(size_t initialSize) : data(new T*[initialSize]), currentSize(0), currentCapacity(initialSize) {}
+    ~VectorP() {
+        for (size_t i = 0; i < currentSize; ++i) {
+            delete data[i];
+        }
+        delete[] data;
+    }
+
+    void push_back(const T& value) {
+        if (currentSize >= currentCapacity) {
+            reserve(currentCapacity == 0 ? 1 : currentCapacity * 2);
+        }
+        data[currentSize++] = new T(value);
+    }
+
+    T& operator[](size_t index) {
+        return *data[index];
+    }
+
+    // Other methods omitted for brevity
+
+private:
+    T** data;  // Array of pointers to T
+    size_t currentSize;
+    size_t currentCapacity;
+
+    void reserve(size_t newCapacity) {
+        T** newData = new T*[newCapacity];
+        for (size_t i = 0; i < currentSize; ++i) {
+            newData[i] = data[i];
+        }
+        delete[] data;
+        data = newData;
+        currentCapacity = newCapacity;
+    }
 };
 
 } // namespace eden
