@@ -26,15 +26,38 @@ public:
             
         std::cout << msg << std::endl;
 
-        double a = 0.1, sigma = 0.01; 
+        double alpha = 0.1, sigma = 0.01; 
 
-        HullWhiteModel1F model(a, sigma);
+        eden::Vector_t<double> marketPrices;
+        marketPrices.push_back(0.254);
+        marketPrices.push_back(0.230);
+        marketPrices.push_back(0.2);
+        marketPrices.push_back(0.21);
+        marketPrices.push_back(0.24);
+        marketPrices.push_back(0.25);
+        marketPrices.push_back(0.21);
+        marketPrices.push_back(0.24);
+        marketPrices.push_back(0.3);
+    
+        eden::Vector_t<double> times;
+        times.push_back(0.5);
+        times.push_back(1.0);
+        times.push_back(1.5);
+        times.push_back(2.0);
+        times.push_back(2.5);
+        times.push_back(3.0);
+        times.push_back(3.5);
+        times.push_back(4.0);
+        times.push_back(4.5);
+        times.push_back(5.0);
 
-        std::vector<double> marketPrices = {0.254, 0.230, 0.210, 0.2, 0.21, 0.24, 0.25, 0.21, 0.24, 0.3};
-        std::vector<double> times = {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
-        Calibration1F calib(model, marketPrices, times);
-        model.setMarketRateCurve(times, marketPrices);
-        calib.calibrate(0.3);
+        auto initalTermStructure = YieldCurve(times, marketPrices);
+
+        HullWhiteModel1F model(alpha, sigma, initalTermStructure);
+
+        // Calibration1F calib(model, marketPrices, times);
+        // model.setMarketRateCurve(times, marketPrices);
+        // calib.calibrate(0.3);
 
         SwapData    deal;
         deal.maturity = 5.0;
@@ -46,7 +69,7 @@ public:
         deal.floatingLeg.type = LegType::Floating;
         deal.floatingLeg.paymentDates = {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0};
 
-        SwapPricer pricer(model, deal);
+        SwapPricer1F pricer(model, deal);
 
         auto vLegFixedPv = pricer.presentValueLeg(deal.maturity, 0.03, deal.fixedLeg);
         auto vLegFloatingPv = pricer.presentValueLeg(deal.maturity, 0.03, deal.floatingLeg);

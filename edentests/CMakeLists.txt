@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28.1)
 set(EDEN_TEST_NAME edentests)
 project(${EDEN_TEST_NAME})
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -O0 -Wall -I/opt/homebrew/Cellar/llvm/19.1.7/include/c++/v1")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
@@ -23,13 +23,12 @@ include_directories((BEFORE "./"))
 include_directories((BEFORE "../build/_deps/googletest-src/googletest/include/gtest"))
 include_directories((BEFORE "../edencore"))
 include_directories((BEFORE "../edenanalytics"))
-include_directories((BEFORE "../godot"))
+# include_directories((BEFORE "../godot"))
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 
 add_library(libfmt SHARED IMPORTED)
 
 set(SOURCES_TEST 
-    hello_test.cpp 
     logger_test.cpp 
     datetime_test.cpp 
     swap_test.cpp 
@@ -37,7 +36,8 @@ set(SOURCES_TEST
     semaphore_test.cpp
     hashset_test.cpp
     pair_test.cpp
-    vector_test.cpp)
+    vector_test.cpp
+    exceptions_test.cpp)
 
 find_package(fmt)
 
@@ -54,6 +54,6 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_options(${EDEN_TEST_NAME} PRIVATE -O3)  # Example flags for GCC/Clang
 endif()
 
-target_link_libraries(${EDEN_TEST_NAME} edencore edenanalytics edengodot fmt::fmt GTest::gtest_main)
+target_link_libraries(${EDEN_TEST_NAME} edencore edenanalytics fmt::fmt GTest::gtest_main)
 include(GoogleTest)
 gtest_discover_tests(${EDEN_TEST_NAME})

@@ -62,7 +62,9 @@
         "variant": "cpp",
         "vector": "cpp",
         "algorithm": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "memory": "cpp",
+        "print": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++20"
 }

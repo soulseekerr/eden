@@ -1,7 +1,6 @@
 
 #include "ver.h"
 #include "core/edenanalytics.h"
-#include "hello.h"
 #include "logger.h"
 #include "time_elapsed.h"
 #include "datetime.h"
@@ -27,10 +26,6 @@
 using namespace eden;
 using namespace edentree;
 
-// class MyService {
-// public:
-//     MyService(std::unique_ptr<Logger)
-// };
 
 int main() {
     // Test fmt library

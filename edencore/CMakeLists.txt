@@ -3,14 +3,14 @@ set(MY_LIB_NAME edencore)
 project(${MY_LIB_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -O0 -Wall -I/opt/homebrew/Cellar/llvm/19.1.7/include/c++/v1")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 
-set(SOURCES hello.cpp 
+set(SOURCES
     logger.cpp 
     datetime.cpp 
     threadtask.cpp 

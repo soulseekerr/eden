@@ -99,6 +99,16 @@ public:
         return num_elements_ == 0;
     }
 
+    T& back() const {
+        if (empty()) throw std::out_of_range("Vector is empty");
+        return ptr_[num_elements_ - 1];
+    }
+
+    T& front() const {
+        if (empty()) throw std::out_of_range("Vector is empty");
+        return ptr_[0];
+    }
+
     void push_back(const T& key) {
         if (num_elements_ >= capacity_) {
             resize();

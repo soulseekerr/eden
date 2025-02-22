@@ -7,13 +7,13 @@ using namespace edenanalytics;
 
 namespace edenanalytics {
 
-class SwapPricer {
+class SwapPricer1F {
 private:
-    const IHullWhiteModel& model_;
+    const HullWhiteModel1F& model_;
     const SwapData& swapData_;
 
 public:
-    SwapPricer(const IHullWhiteModel& model, const SwapData& swapData)
+    SwapPricer1F(const HullWhiteModel1F& model, const SwapData& swapData)
         : model_(model), swapData_(swapData) {}
 
     double priceSwap(double t, double r) const {
@@ -34,7 +34,14 @@ public:
         std::vector<double> legPVs;
         auto legPv = 0.0;
         for (double paymentDate : leg.paymentDates) {
-            double df = model_.discountFactor(t, paymentDate, r);
+            // double df = model_.discountFactor(t, paymentDate, r);
+            double df = model_.forwardRate(paymentDate);;
+            if (leg.type == LegType::Fixed) {
+                legPv = leg.rate * leg.notional * df;
+            } else if (leg.type == LegType::Floating) {     
+                // For simplicity, we assume the floating rate is the short rate r.
+                legPv += leg.notional * (df - 1);
+            }
 
             if (leg.type == LegType::Fixed) {
                 legPv = leg.rate * leg.notional * df;

@@ -10,7 +10,9 @@
                 "${workspaceFolder}/build/_deps/googletest-src/googletest/include/gtest",
                 "${workspaceFolder}/build/_deps/googletest-src/googletest/include",
                 "/opt/homebrew/opt/python/Frameworks/Python.framework/Headers",
-                "${workspaceFolder}"
+                "${workspaceFolder}",
+                "/opt/homebrew/Cellar/llvm/19.1.7/include/c++/v1",
+                "/opt/homebrew/Cellar/llvm/19.1.7/include/c++/v1/__thread"
             ],
             "defines": [],
             "macFrameworkPath": [

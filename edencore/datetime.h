@@ -8,11 +8,11 @@ it provides a robust and flexible way to handle date and time.
 #include <iostream>
 #include <format>  // for C++20
 
-#include<ctime>
-#include<regex>
-#include<array>
-#include<utility>
-#include<cstdlib>
+#include <ctime>
+#include <regex>
+#include <array>
+#include <utility>
+#include <cstdlib>
 #include <iomanip>
 
 using namespace std::literals; // enables literal suffixes, e.g. 24h, 1ms, 1s.

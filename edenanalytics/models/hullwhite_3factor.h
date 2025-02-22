@@ -12,22 +12,28 @@
 
 namespace edenanalytics {
 
-class HullWhiteModel3F : public IHullWhiteModel {
-public:
-    HullWhiteModel3F(double a, double sigma1, double sigma2, double sigma3)
-        : a_(a), sigma1_(sigma1), sigma2_(sigma2), sigma3_(sigma3) {}
+class HullWhiteModel3F : public HullWhiteModel1F {
+private:
+    double a_, sigma1_, sigma2_, sigma3_;
+    std::vector<double> theta_;
 
-    double discountFactor(double t, double T, double r) const override {
+public:
+    HullWhiteModel3F(double a, double sigma1, double sigma2, double sigma3, const YieldCurve& initialTermStructure)
+        : HullWhiteModel1F(a, sigma1, initialTermStructure), a_(a), sigma1_(sigma1), sigma2_(sigma2), sigma3_(sigma3) {}
+
+    virtual ~HullWhiteModel3F() = default;
+
+    double discountFactor(double t, double T, double r) const {
         double B = (1.0 - std::exp(-a_ * (T - t))) / a_;
         double A = std::exp((B - (T - t)) * theta(t) - (sigma1_ * sigma1_ + sigma2_ * sigma2_ + sigma3_ * sigma3_) * B * B / (2 * a_));
         return A * std::exp(-B * r);
     }
 
-    const double speedMeanReversion() const override { return a_; }
+    const double speedMeanReversion() const { return a_; }
 
-    const double volatilityShortRate() const override { return sigma1_; }
+    const double volatilityShortRate() const { return sigma1_; }
 
-    void setTheta(const std::vector<double>& theta) override { theta_ = theta; }
+    void setTheta(const std::vector<double>& theta) { theta_ = theta; }
 
     std::vector<double> simulateShortRatePath(double t, double T, double r0, double dt, int numPaths) const {
         std::vector<double> rates;
@@ -52,10 +58,6 @@ public:
         }
         return rates;
     }
-
-private:
-    double a_, sigma1_, sigma2_, sigma3_;
-    std::vector<double> theta_;
 
     double theta(double t) const {
         int index = static_cast<int>(t);
