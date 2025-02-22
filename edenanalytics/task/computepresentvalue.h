@@ -3,7 +3,7 @@
 #include "task/tasknode.h"
 #include "datetime.h"
 
-#include "data_attributes.h"
+#include "attributes.h"
 
 #include "models/hullwhite_1factor.h"
 #include "products/vanilla_swap.h"
@@ -14,7 +14,7 @@ namespace eden {
 // TODO add composition with Strategies = computation task 
 class ComputePresentValue : public ATaskNode {
 public:
-    ComputePresentValue(const std::shared_ptr<DataAttributes>& p) : ATaskNode(p) {}
+    ComputePresentValue(const std::shared_ptr<Attributes>& p) : ATaskNode(p) {}
     virtual ~ComputePresentValue() {}
 
     Response execute() override {
@@ -88,7 +88,7 @@ public:
 
 class SavePresentValue : public ATaskNode {
 public:
-    SavePresentValue(const std::shared_ptr<DataAttributes>& p) : ATaskNode(p) {}
+    SavePresentValue(const std::shared_ptr<Attributes>& p) : ATaskNode(p) {}
     virtual ~SavePresentValue() {}
 
     Response execute() override {

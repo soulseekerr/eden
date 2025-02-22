@@ -6,7 +6,7 @@
 #include <format>
 #include <memory>
 
-#include "data_attributes.h"
+#include "attributes.h"
 
 namespace eden {
 
@@ -28,15 +28,15 @@ struct ITaskNode {
 
 class ATaskNode : public ITaskNode {
 public:
-    ATaskNode(const std::shared_ptr<DataAttributes>& p) : params_(p) {}
+    ATaskNode(const std::shared_ptr<Attributes>& p) : params_(p) {}
     virtual ~ATaskNode() {}
 
     virtual Response execute() = 0;
 
-    const std::shared_ptr<DataAttributes>& params() const { return params_; }
+    const std::shared_ptr<Attributes>& params() const { return params_; }
 
 private:
-    std::shared_ptr<DataAttributes> params_;
+    std::shared_ptr<Attributes> params_;
 };
 
 template <typename T>

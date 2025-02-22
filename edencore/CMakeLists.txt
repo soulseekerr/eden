@@ -14,7 +14,7 @@ set(SOURCES
     logger.cpp 
     datetime.cpp 
     threadtask.cpp 
-    data_attributes.cpp 
+    attributes.cpp 
     sort.cpp 
     redblacktree.cpp 
     hashset.cpp
@@ -28,10 +28,11 @@ add_library(${MY_LIB_NAME} SHARED ${SOURCES})
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Building in Debug mode")
     target_compile_definitions(${MY_LIB_NAME} PRIVATE DEBUG_MODE)
-    target_compile_options(${MY_LIB_NAME} PRIVATE -g -O0)
+    target_compile_options(${MY_LIB_NAME} PRIVATE -g -O0 -Wreturn-stack-address)
+
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message("Building in Release mode")
-    target_compile_options(${MY_LIB_NAME} PRIVATE -O3)  # Example flags for GCC/Clang
+    target_compile_options(${MY_LIB_NAME} PRIVATE -O3)
 endif()
 
 find_package(fmt)

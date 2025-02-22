@@ -1,14 +1,14 @@
 #pragma once
 
-#include "data_attributes.h"
+#include "attributes.h"
 
 namespace eden {
 
-class TaskParameters : public DataAttributes {
+class TaskParameters : public Attributes {
 public:
     TaskParameters() = delete;
 
-    explicit TaskParameters(const DateTime& dt, const std::string& scenario) : DataAttributes(dt), scenario_(scenario) {}
+    explicit TaskParameters(const DateTime& dt, const std::string& scenario) : Attributes(dt), scenario_(scenario) {}
 
     virtual ~TaskParameters() {}
 

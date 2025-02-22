@@ -64,7 +64,8 @@
         "algorithm": "cpp",
         "semaphore": "cpp",
         "memory": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+        "utility": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++20"
 }

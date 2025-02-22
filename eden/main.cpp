@@ -4,7 +4,7 @@
 #include "logger.h"
 #include "time_elapsed.h"
 #include "datetime.h"
-#include "data_attributes.h"
+#include "attributes.h"
 #include "task/taskparameters.h"
 #include "models/hullwhite_1factor.h"
 #include "task/computepresentvalue.h"
@@ -43,7 +43,7 @@ int main() {
     logManager.logInfo("Starting log - {}", DateTime().toString());
 
     auto cob = DateTime(2024, 6, 3);
-    const auto params = std::make_shared<DataAttributes>(cob);
+    const auto params = std::make_shared<Attributes>(cob);
 
     logManager.log("COB: {}", params->cob().year_month_day_h());
 
