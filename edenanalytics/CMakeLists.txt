@@ -8,11 +8,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+include_directories(BEFORE "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
 include_directories((BEFORE "../edencore"))
 include_directories((BEFORE "../edenanalytics"))
 
 set(SOURCES
     core/yieldcurve.cpp
+    core/creditcurve.cpp
     models/hullwhite_1factor.cpp
     edenanalytics.cpp
     task/computepresentvalue.cpp

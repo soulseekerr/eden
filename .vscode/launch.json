@@ -1,15 +1,47 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "CMake: CMake Script",
-            "type": "cmake",
-            "request": "launch",
-            "cmakeDebugType": "script",
-            "scriptPath": "${file}"
-        }
+             
+      {
+        "name": "Debug edentests with CMake",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "/Users/soulseeker/Projects/GitHub/eden_project/eden/debug/Debug/bin/edentests",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "/Users/soulseeker/Projects/GitHub/eden_project/eden",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "lldb", // Use lldb instead of gdb
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for lldb",
+            "text": "settings set target.prefer-dynamic-value run-target",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build"
+      },
+      {
+        "name": "Debug Eden with CMake",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "/Users/soulseeker/Projects/GitHub/eden_project/eden/debug/Debug/bin/eden",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "/Users/soulseeker/Projects/GitHub/eden_project/eden",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "lldb", // Use lldb instead of gdb
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for lldb",
+            "text": "settings set target.prefer-dynamic-value run-target",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build"
+      },
     ]
-}
+  }
+  

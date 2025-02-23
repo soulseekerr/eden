@@ -25,6 +25,7 @@ include_directories((BEFORE "../edencore"))
 include_directories((BEFORE "../edenanalytics"))
 # include_directories((BEFORE "../godot"))
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+include_directories(BEFORE "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
 
 add_library(libfmt SHARED IMPORTED)
 
@@ -37,7 +38,8 @@ set(SOURCES_TEST
     hashset_test.cpp
     pair_test.cpp
     vector_test.cpp
-    exceptions_test.cpp)
+    exceptions_test.cpp
+    creditcurve_test.cpp)
 
 find_package(fmt)
 

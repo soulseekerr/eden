@@ -13,6 +13,7 @@ include_directories((BEFORE "../build/_deps/googletest-src/googletest/include/gt
 include_directories((BEFORE "../edencore"))
 include_directories((BEFORE "../edenanalytics"))
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+include_directories(BEFORE "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
 
 add_library(libfmt SHARED IMPORTED)
 

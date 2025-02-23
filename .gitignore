@@ -33,6 +33,8 @@
 
 # folder build
 build/**
+debug/**
+release/**
 
 *.log
 *.pyc

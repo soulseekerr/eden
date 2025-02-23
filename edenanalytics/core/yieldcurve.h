@@ -14,15 +14,6 @@
 
 namespace edenanalytics {
 
-/**
- * When implementing this in C++, you would need to:
- * Input or generate the initial term structure (e.g., using market data).
- * Calibrate the θ(t) function to fit the term structure.
- * Use this calibrated model to simulate the short rate and price derivatives.
- * 
- */
-
-// Will contain the initial term structure in the model
 class YieldCurve {
 private:
     eden::Vector_t<double> maturities_;

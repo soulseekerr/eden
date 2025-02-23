@@ -9,6 +9,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
+include_directories(BEFORE "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
 
 set(SOURCES
     logger.cpp 
@@ -36,5 +37,8 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 find_package(fmt)
+find_package(nlohmann_json)
+
 target_link_libraries(${MY_LIB_NAME} PRIVATE fmt::fmt)
+# target_link_libraries(${MY_LIB_NAME} PRIVATE lohmann_json::nlohmann_json)
 target_compile_features(${MY_LIB_NAME} PRIVATE cxx_std_20)
