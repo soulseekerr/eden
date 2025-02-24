@@ -39,7 +39,8 @@ set(SOURCES_TEST
     pair_test.cpp
     vector_test.cpp
     exceptions_test.cpp
-    creditcurve_test.cpp)
+    creditcurve_test.cpp
+    search_test.cpp)
 
 find_package(fmt)
 

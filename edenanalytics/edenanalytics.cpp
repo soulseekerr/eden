@@ -8,8 +8,8 @@
 #include "products/vanilla_swap.h"
 #include "task/tasknode.h"
 #include "core/creditcurve.h"
-#include "task/taskparameters.h"
-#include "task/computecva.h"
+#include "task/scenariotask.h"
+#include "task/computetest.h"
 
 void print_version() {
     std::cout << eden::analytics::getVersion() << std::endl;

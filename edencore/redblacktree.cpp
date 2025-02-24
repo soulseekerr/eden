@@ -2,7 +2,7 @@
 #include "redblacktree.h"
 #include <iostream>
 
-using namespace edentree;
+using namespace eden;
 
 void RedBlackTree::insert(const int& data) {
     Node* p = new Node(data);

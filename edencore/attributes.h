@@ -5,15 +5,19 @@
 
 namespace eden {
 
+/**  
+ * @brief Attributes class
+ * @details This class is used to store the attributes of a task
+*/
 class Attributes {
 private:
     DateTime cob_;
 
 public:
-    // Default constructor 
+    // Default constructor is deleted
     Attributes() = delete;
-    // Constructor accepting cob
-    explicit Attributes(const DateTime& cob);
+    // Constructor accepting cob as reference
+    explicit Attributes(const DateTime& cob) noexcept;
     // Destructor
     virtual ~Attributes();
     // Copy constructor

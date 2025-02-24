@@ -18,6 +18,8 @@ set(SOURCES
     models/hullwhite_1factor.cpp
     edenanalytics.cpp
     task/computepresentvalue.cpp
+    task/tasknode.cpp
+    task/computetest.cpp
 )
 
 add_library(libfmt SHARED IMPORTED)
@@ -33,5 +35,5 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 find_package(fmt)
-target_link_libraries(${MY_LIB_NAME} PRIVATE fmt::fmt)
+target_link_libraries(${MY_LIB_NAME} PRIVATE fmt::fmt edencore)
 target_compile_features(${MY_LIB_NAME} PRIVATE cxx_std_20)

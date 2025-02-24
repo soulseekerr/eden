@@ -3,7 +3,7 @@
 
 using namespace eden;
 
-Attributes::Attributes(const DateTime& cob) : cob_(cob) {}
+Attributes::Attributes(const DateTime& cob) noexcept : cob_(cob) {}
     
  // Destructor
  Attributes::~Attributes() {}

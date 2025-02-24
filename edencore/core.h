@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <atomic>
 #include <type_traits>
 #include <semaphore>
@@ -16,6 +17,20 @@
 #ifndef _ALWAYS_INLINE_
 #define _ALWAYS_INLINE_ inline
 #endif
+
+namespace eden {
+
+enum class Status {
+    OK = 1,
+    ERROR = -1 
+};
+
+struct Response {
+    Status status;
+    std::string msg;
+    Response(const Status s, const std::string& m) : status(s), msg(m) {}
+    virtual ~Response() {}
+};
 
 
 template <class T>
@@ -109,3 +124,5 @@ public:
 		flag.store(p_value, std::memory_order_release);
 	}
 };
+
+} // namespace eden

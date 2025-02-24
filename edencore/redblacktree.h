@@ -1,6 +1,6 @@
 #pragma once
 
-namespace edentree {
+namespace eden {
 
 enum Color { RED, BLACK };
 
@@ -37,4 +37,4 @@ protected:
 };
 
 
-} // namespace edentree
+} // namespace eden

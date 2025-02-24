@@ -12,13 +12,13 @@
 namespace eden {
 
 // TODO add composition with Strategies = computation task 
-class ComputePresentValue : public ATaskNode {
+class ComputePresentValue : public TaskNode {
 public:
-    ComputePresentValue(const std::shared_ptr<Attributes>& p) : ATaskNode(p) {}
+    ComputePresentValue(const std::shared_ptr<Attributes>& p) : TaskNode(p) {}
     virtual ~ComputePresentValue() {}
 
     Response execute() override {
-        const eden::DateTime& cob = this->params()->cob();
+        const eden::DateTime& cob = attributes()->cob();
             
         auto msg = std::format(
             "Compute Present Value COB {}:", 
@@ -86,13 +86,13 @@ public:
     }
 };
 
-class SavePresentValue : public ATaskNode {
+class SavePresentValue : public TaskNode {
 public:
-    SavePresentValue(const std::shared_ptr<Attributes>& p) : ATaskNode(p) {}
+    SavePresentValue(const std::shared_ptr<Attributes>& p) : TaskNode(p) {}
     virtual ~SavePresentValue() {}
 
     Response execute() override {
-        const eden::DateTime& cob = this->params()->cob();
+        const eden::DateTime& cob = attributes()->cob();
         
         auto msg = std::format("Save Present Value COB {}:", cob.year_month_day_h());
         std::cout << msg << std::endl;
