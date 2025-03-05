@@ -43,5 +43,5 @@ Response ComputeTest::execute() {
         std::cout << "EUR 1Y Spread: " << curve->getSpread(Tenor::T1Y) << std::endl;
     }
 
-    return Response(Status::OK, "");
+    return resp::success;
 }

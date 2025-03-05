@@ -1,9 +1,10 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 #include <atomic>
 #include <type_traits>
 #include <semaphore>
+#include <cstddef>
 
 // Caught with -Wdangling 
 // warning: temporary whose address is used as value of local variable ...
@@ -20,18 +21,22 @@
 
 namespace eden {
 
-enum class Status {
+enum class Status : int {
     OK = 1,
     ERROR = -1 
 };
 
-struct Response {
+struct Response final {
     Status status;
-    std::string msg;
-    Response(const Status s, const std::string& m) : status(s), msg(m) {}
-    virtual ~Response() {}
+    std::string_view msg;
+    constexpr Response(const Status s, std::string_view m) noexcept : status(s), msg(m) {}
+    ~Response() = default;
 };
 
+namespace resp {
+	constexpr Response success{Status::OK, "Operation successful"};
+	constexpr Response failure{Status::ERROR, "An error occurred"};
+} // namespace resp
 
 template <class T>
 class SafeNumeric {

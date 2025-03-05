@@ -9,7 +9,7 @@ public:
     eden::Response execute() override {
         const auto& cob = attributes()->cob();
         std::cout << "DummyTask executed: " << cob.year_month_day_h() << std::endl;
-        return eden::Response(eden::Status::OK, "DummyTask executed");
+        return eden::resp::success;
     }
 };
 
