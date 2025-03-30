@@ -1,6 +1,5 @@
 
 #include <gtest/gtest.h>
-// #include "gd_hashset.h"
 #include "hashset.h"
 
 #include <iostream>
@@ -11,51 +10,108 @@
 #include <algorithm>
 #include <random>
 
-
-TEST(HashSetTest, BasicAssertions) {
-
-    std::cout << "Testing HashSet_t" << std::endl;
-
-#ifdef DEBUG_MODE
-    std::cout << "Debug mode is enabled!" << std::endl;
-    // Add any additional debug-specific code here
-#endif
-
-    HashSet_t<uint64_t> hs2;
-
-    hs2.insert(1436596);
-    hs2.insert(73875350870UL);
-    hs2.insert(9707435087ULL);
-    hs2.insert(430847508);
-    hs2.insert(6586589);
-    hs2.insert(1436536596);
-    hs2.insert(675930);
-    hs2.display();
-
-    // HashSet using default std::hash function
+/**
+ * @brief HashSetTest class
+ * @details Test fixture for HashSet_t class
+ * 
+ */
+class HashSetTest : public ::testing::Test {
+protected:
+    HashSet_t<int> hashSet1;
+    HashSet_t<uint64_t> hashSet2;
     HashSet_t<std::string, std::hash<std::string>> stringHashSet;
-    stringHashSet.insert("hello");
-    stringHashSet.insert("world");
-    stringHashSet.insert("vince");
-    stringHashSet.insert("robert");
-    stringHashSet.insert("anna");
 
-    stringHashSet.display();
+    void SetUp() override {
+        hashSet1.insert(10);
+        hashSet1.insert(20);
+        hashSet1.insert(30);
+
+        hashSet2.insert(1436596);
+        hashSet2.insert(73875350870UL);
+        hashSet2.insert(9707435087ULL);
+        hashSet2.insert(430847508);
+        hashSet2.insert(6586589);
+        hashSet2.insert(1436536596);
+        hashSet2.insert(675930);
+        hashSet2.display();
+
+        stringHashSet.insert("hello");
+        stringHashSet.insert("world");
+        stringHashSet.insert("vince");
+        stringHashSet.insert("robert");
+        stringHashSet.insert("anna");
+        stringHashSet.display();
+    }
+};
+
+// Test inserting and searching for elements
+TEST_F(HashSetTest, InsertAndSearch) {
+    EXPECT_TRUE(hashSet1.search(10));
+    EXPECT_TRUE(hashSet1.search(20));
+    EXPECT_TRUE(hashSet1.search(30));
+
+    EXPECT_FALSE(hashSet1.search(40));  // Not inserted
 
     auto bFound1 = stringHashSet.search("vince");
     auto bFound2 = stringHashSet.search("Raf");
-    std::cout << "vince: " << bFound1 << " Raf: " << bFound2 << std::endl;
-
-
-    std::cout << "Testing HashSet_t loade factor 0.5" << std::endl;
-    
-    // HashSet using custom load factor 0.5
-    HashSet_t<uint64_t> intHashSet2(0.5);
-    intHashSet2.insert(45);
-    intHashSet2.insert(55);
-    intHashSet2.insert(65);
-    intHashSet2.display();
+    std::cout << "vince->" << bFound1 << " Raf->" << bFound2 << std::endl;
 }
+
+// Test duplicate insertion handling
+TEST_F(HashSetTest, DuplicateInsert) {
+    EXPECT_FALSE(hashSet1.insert(10));  // Already exists
+    EXPECT_FALSE(hashSet1.insert(20));  // Already exists
+}
+
+// Test removing elements
+TEST_F(HashSetTest, RemoveElement) {
+    EXPECT_TRUE(hashSet1.remove(20));   // Successfully removed
+    EXPECT_FALSE(hashSet1.search(20));  // Should no longer exist
+    EXPECT_FALSE(hashSet1.remove(20));  // Removing again should fail
+}
+
+// Test hash collisions (forces multiple elements into the same bucket)
+TEST(HashSetCollisionTest, CollisionHandling) {
+    HashSet_t<int> collisionSet;
+    
+    int val1 = 5;
+    int val2 = 5 + 11; // 11 is the first prime bucket size, causing a collision
+
+    EXPECT_TRUE(collisionSet.insert(val1));
+    EXPECT_TRUE(collisionSet.insert(val2)); // Should still succeed
+    EXPECT_TRUE(collisionSet.search(val1));
+    EXPECT_TRUE(collisionSet.search(val2));
+
+    EXPECT_TRUE(collisionSet.remove(val1));
+    EXPECT_FALSE(collisionSet.search(val1));
+    EXPECT_TRUE(collisionSet.search(val2));
+}
+
+// Test resizing behavior when exceeding load factor
+TEST(HashSetResizeTest, ResizeOnLoadFactor) {
+    HashSet_t<int> resizableSet(0.5); // Lower load factor to trigger resize early
+    for (int i = 0; i < 20; i++) {
+        resizableSet.insert(i);
+    }
+
+    // Ensure all elements are still present after resizing
+    for (int i = 0; i < 20; i++) {
+        EXPECT_TRUE(resizableSet.search(i));
+    }
+}
+
+// Test insertion after resizing
+TEST(HashSetResizeTest, InsertAfterResize) {
+    HashSet_t<int> resizableSet(0.5);
+    for (int i = 0; i < 25; i++) {
+        resizableSet.insert(i);
+    }
+
+    // Ensure resizing didn't break insertions
+    EXPECT_TRUE(resizableSet.insert(50));
+    EXPECT_TRUE(resizableSet.search(50));
+}
+
 
 // Generate random MarketData objects
 std::vector<MarketDataExample> generateData(size_t count) {

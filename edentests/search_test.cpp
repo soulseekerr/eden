@@ -1,11 +1,10 @@
 
 #include <gtest/gtest.h>
-
 #include "sort.h"
-#include "search.h"
-#include "dfs.h"
 #include "randomnumbers.h"
+#include "search.h"
 #include "redblacktree.h"
+#include "dfs.h"
 
 #include <iostream>
 #include <unordered_set>
@@ -17,42 +16,33 @@
 
 using namespace eden;
 
+void heapExample() {
+    eden::MaxHeap heap;
+    heap.insert(10);
+    heap.insert(20);
+    heap.insert(5);
+    heap.insert(6);
+    heap.insert(1);
+    heap.insert(8);
+    heap.insert(9);
+
+    std::cout << "Heap elements: ";
+    heap.printHeap();
+
+    std::cout << "Extracting max: " << heap.extractMax() << std::endl;
+    std::cout << "Heap elements after extraction: ";
+    heap.printHeap();
+}
+
 TEST(SearchTest, BasicAssertions) {
 
     std::cout << "Testing Search Algorithms" << std::endl;
 
     heapExample();
 
-    std::cout << "Testing Sorting Algorithms:" << std::endl;
-    std::vector<int> arr = {10, 7, 8, 9, 1, 5, 45, 71, 4, 2};
-    bubbleSortExample(arr, true);
-    selectionSortExample(arr, true);
-    mergeSortExample(arr, true);
-    quickSortExample(arr, true);
-
-    // Generate num random numbers between min and max
-    int num = 10000;
-    int min = 1;
-    int max = 1000;
-    std::vector<int> randomNumbers = generateRandomNumbers(num, min, max);
-    bubbleSortExample(randomNumbers, false);
-    selectionSortExample(randomNumbers, false);
-    mergeSortExample(randomNumbers, false);
-    quickSortExample(randomNumbers, false);
-
-    // Generate num random numbers between min and max
-    // num = 10000;
-    // min = 1;
-    // max = 1000;
-    // randomNumbers = generateRandomNumbers(num, min, max);
-    // bubbleSortExample(randomNumbers, false);
-    // selectionSortExample(randomNumbers, false);
-    // mergeSortExample(randomNumbers, false);
-    // quickSortExample(randomNumbers, false);
-
     std::cout << "Testing RedBlackTree:" << std::endl;
     // Red Black Tree
-    RedBlackTree rbTree;
+    eden::RedBlackTree rbTree;
 
     rbTree.insert(10);
     rbTree.insert(20);

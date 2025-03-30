@@ -6,8 +6,10 @@
 #include <algorithm>
 
 // Function to generate a vector of random integers
-std::vector<int> generateRandomNumbers(int num, int min, int max) {
-    std::vector<int> randomNumbers(num);
+// Function to generate a vector of random numbers
+template <typename T>
+std::vector<T> generateRandomNumbers(int num, T min, T max) {
+    std::vector<T> randomNumbers(num);
 
     // Seed with a real random value, if available
     std::random_device rd;

@@ -21,11 +21,19 @@
 
 namespace eden {
 
+/**
+ * @brief A simple status enum
+ * 
+ */
 enum class Status : int {
     OK = 1,
     ERROR = -1 
 };
 
+/**
+ * @brief A simple response struct that contains a status and a message
+ * 
+ */
 struct Response final {
     Status status;
     std::string_view msg;
@@ -38,6 +46,12 @@ namespace resp {
 	constexpr Response failure{Status::ERROR, "An error occurred"};
 } // namespace resp
 
+/**
+ * @brief Atomic type that is always lock-free
+ * This approach ensures safe concurrent access without using locks
+ * while maintaining proper memory synchronization
+ * 
+ */
 template <class T>
 class SafeNumeric {
 	std::atomic<T> value;
@@ -46,14 +60,26 @@ class SafeNumeric {
 
 public:
 	_ALWAYS_INLINE_ void set(T p_value) {
+		// Ensures that all previous writes 
+		// before calling store are visible to other threads
+		// before the value is stored
+		// Used when writing to an atomic variable to establish
+		// synchronization with subsequent memory_order_acquire loads
 		value.store(p_value, std::memory_order_release);
 	}
 
 	_ALWAYS_INLINE_ T get() const {
+		// Ensures that all operations following this load
+		// are executed after reading the value
+		// Used when reading from an atomic variable to synchronize
+		// with previous memory_order_release stores
 		return value.load(std::memory_order_acquire);
 	}
 
 	_ALWAYS_INLINE_ T increment() {
+		// Combines the effects of memory_order_acquire and memory_order_release
+		// Ensures that all reads/writes are visible before modifying the value,
+		// and modificaitons are visible to subsequent reads
 		return value.fetch_add(1, std::memory_order_acq_rel) + 1;
 	}
 
