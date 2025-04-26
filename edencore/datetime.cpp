@@ -3,8 +3,6 @@
 
 using namespace eden;
 
-// std::locale DateTime::defaultLocale_ = std::locale::classic();
-std::locale DateTime::defaultLocale_ = std::locale("en_US.UTF-8");
 
 void DateTime::addSeconds(int seconds) {
     time_point_ += std::chrono::seconds(seconds);

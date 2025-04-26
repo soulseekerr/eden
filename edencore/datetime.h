@@ -50,6 +50,10 @@ public:
     // Constructor accepting year, month, and day
     DateTime(int year, int month, int day) : time_point_(std::chrono::system_clock::from_time_t(
         [year, month, day]() -> std::time_t {
+            assert(year >= 0 && "Invalid date passed to DateTime constructor.");
+            assert(month >= 0 && "Invalid date passed to DateTime constructor.");
+            assert(day >= 0 && "Invalid date passed to DateTime constructor.");
+
             // Convert std::tm to time_t, then to std::chrono::system_clock::time_point
             std::tm tm = {};
             tm.tm_year = year - 1900;
@@ -142,12 +146,13 @@ public:
     void subtractBusinessDays(int days);
     bool isBusinessDay() const;
 
-    static void setDefaultLocale(const std::locale& loc) {
-        defaultLocale_ = loc;
+    static const std::locale& getDefaultLocale() {
+        static std::locale locale("en_US.UTF-8");
+        return locale;
     }
 
-    static const std::locale& getDefaultLocale() {
-        return defaultLocale_;
+    static void setDefaultLocale(const std::locale& loc) {
+        const_cast<std::locale&>(getDefaultLocale()) = loc;
     }
 
 private:
@@ -194,8 +199,6 @@ private:
     // This is used to cache the string representation of the DateTime object
     mutable bool dirty_ = true;
     mutable std::string cached_string_;
-
-    static std::locale defaultLocale_; // Default locale for formatting
 };
 
 } // namespace eden
