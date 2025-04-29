@@ -8,7 +8,7 @@ public:
 
     eden::Response execute() override {
         const auto& cob = attributes()->cob();
-        std::cout << "DummyTask executed: " << cob.year_month_day_h() << std::endl;
+        std::cout << "DummyTask executed: " << cob.yearMonthDayHyphen() << std::endl;
         return eden::resp::success;
     }
 };
@@ -19,7 +19,7 @@ void example_tasknode_iterator() {
     auto task = std::make_shared<DummyTask>(attr);
 
     // Create task list
-    eden::TaskNodeList<std::shared_ptr<eden::ITask>> taskList;
+    eden::TaskNodeList<std::shared_ptr<eden::ITaskNode>> taskList;
 
     taskList.addTask(std::make_shared<DummyTask>(attr));
     taskList.addTask(std::make_shared<DummyTask>(attr));

@@ -10,7 +10,7 @@ Response ComputePresentValue::execute() {
         
     auto msg = std::format(
         "Compute Present Value COB {}:", 
-        cob.year_month_day_h());
+        cob.yearMonthDayHyphen());
         
     std::cout << msg << std::endl;
 
@@ -37,7 +37,6 @@ Response ComputePresentValue::execute() {
     times.push_back(3.5);
     times.push_back(4.0);
     times.push_back(4.5);
-    times.push_back(5.0);
 
     auto initalTermStructure = YieldCurve(times, marketPrices);
 
@@ -76,7 +75,7 @@ Response ComputePresentValue::execute() {
 Response SavePresentValue::execute() {
     const eden::DateTime& cob = attributes()->cob();
     
-    auto msg = std::format("Save Present Value COB {}:", cob.year_month_day_h());
+    auto msg = std::format("Save Present Value COB {}:", cob.yearMonthDayHyphen());
     std::cout << msg << std::endl;
 
     return resp::success;

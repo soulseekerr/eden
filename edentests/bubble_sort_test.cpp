@@ -87,10 +87,10 @@ TEST_F(BubbleSortTest, SortVectorWithDuplicates) {
 }
 
 TEST_F(BubbleSortTest, SortRandomNumbers) {
-    eden::st_time_elapsed te;
-    te.time_start();
+    eden::sTimeElapsed te;
+    te.timeStart();
     eden::bubbleSort<int>(randomNumbers);
-    te.time_elapsed_nano();
+    te.nsElapsed();
 
     // Check that the vector is sorted correctly
     EXPECT_TRUE(isSorted(randomNumbers));

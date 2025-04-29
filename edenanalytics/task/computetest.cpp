@@ -21,27 +21,27 @@ using namespace eden;
 Response ComputeTest::execute() {
     const eden::DateTime& cob = attributes()->cob();
 
-    auto msg = std::format("Compute CVA COB {}:", cob.year_month_day_h());
+    auto msg = std::format("Compute COB {}:", cob.yearMonthDayHyphen());
             
     std::cout << msg << std::endl;
 
     // Load JSON data for multiple CreditCurves
-    std::ifstream file("all_credit_curves.json");
-    if (!file) {
-        throw std::runtime_error("Failed to open JSON file");
-    }
+    // std::ifstream file("all_credit_curves.json");
+    // if (!file) {
+    //     throw std::runtime_error("Failed to open JSON file");
+    // }
 
-    json jsonData;
-    file >> jsonData;
+    // json jsonData;
+    // file >> jsonData;
 
-    // Create a container for credit curves from the loaded JSON data
-    eden::V1::CreditCurveContainer container(jsonData);
+    // // Create a container for credit curves from the loaded JSON data
+    // eden::V1::CreditCurveContainer container(jsonData);
 
-    // Retrieve and use the CreditCurve
-    auto curve = container.getCreditCurve("EUR");
-    if (curve) {
-        std::cout << "EUR 1Y Spread: " << curve->getSpread(Tenor::T1Y) << std::endl;
-    }
+    // // Retrieve and use the CreditCurve
+    // auto curve = container.getCreditCurve("EUR");
+    // if (curve) {
+    //     std::cout << "EUR 1Y Spread: " << curve->getSpread(Tenor::T1Y) << std::endl;
+    // }
 
     return resp::success;
 }

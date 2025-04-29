@@ -1,59 +1,53 @@
 #pragma once
 
 #include <chrono>
+#include <format>  // for C++20
 #include <iostream>
-#include <format>
 
-using namespace std::literals; // enables literal suffixes, e.g. 24h, 1ms, 1s.
+using namespace std::literals; 
 
 namespace eden {
 
-struct st_time_elapsed {
-    std::chrono::time_point<std::chrono::steady_clock>      start;
+/**
+ * @brief TimeElapsed class
+ * @details This class is used to measure elapsed time.
+ * It provides methods to start the timer, measure elapsed time, and print it.
+ */
+struct sTimeElapsed {
+    std::chrono::time_point<std::chrono::steady_clock> start;
 
-    void time_start() {
-        
+    void timeStart() {        
         start = std::chrono::steady_clock::now();
     }
 
-    void time_elapsed() {
-        
+    template<typename T>
+    void getElapsed() const {
         const auto end = std::chrono::steady_clock::now();
-
-        auto value = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-
-        std::cout << "Calculations took " 
-            << value << " ≈ "
-            << (end - start) / 1ms << "ms ≈ " // almost equivalent form of the above, but
-            << (end - start) / 1s << "s.\n";  // using milliseconds and seconds accordingly
+        auto value = std::chrono::duration_cast<T>(end - start);
+        std::cout << "Elapsed: " << value.count() << " " << typeid(T).name() << std::endl;
     }
 
-    void time_elapsed_nano() {
-        
+    void msElapsed() const {
         const auto end = std::chrono::steady_clock::now();
-
-        auto value = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-
-        std::cout << "time elapsed: " << value 
-            << " = " << (end - start) / 1ms << "ms = "
-            << (end - start) / 1s << "s." <<  std::endl;
+        auto value = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        std::cout << "Elapsed: " << value << " ms" << std::endl;
     }
 
-    void time_elapsed_seconds() {
-        
+    void nsElapsed() const {
         const auto end = std::chrono::steady_clock::now();
+        // auto value = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+        std::cout << "Elapsed: " << (end - start) / 1ns << "ns." <<  std::endl;
+    }
 
+    void secElapsed() const {
+        const auto end = std::chrono::steady_clock::now();
         const std::chrono::duration<double> elapsed_seconds(end - start);
-
-        std::cout << "Elapsed time: ";
+        std::cout << "Elapsed: ";
         // std::cout << elapsed_seconds.count() << '\n';  // before C++20
-        std::cout << elapsed_seconds << '\n';  // C++20
+        std::cout << elapsed_seconds << std::endl;  // C++20
     }
-};
 
-struct st_datetime {
-
-    std::string year_month_day_h() {
+    static std::string yearMonthDayHyphen() {
         const std::chrono::time_point now{std::chrono::system_clock::now()};
         const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(now)};
  
@@ -64,11 +58,10 @@ struct st_datetime {
 
         std::stringstream ss;
         ss << ymd;
-        
         return ss.str();
     }
 
-    std::string year() {
+    static std::string year() {
         const std::chrono::time_point now{std::chrono::system_clock::now()};
         const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(now)};
         
@@ -78,7 +71,7 @@ struct st_datetime {
         return ss.str();
     }
 
-    std::string year_month() {
+    static std::string yearMonth() {
         const std::chrono::time_point now{std::chrono::system_clock::now()};
         const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(now)};
         
@@ -89,9 +82,8 @@ struct st_datetime {
         return ss.str();
     }
 
-    std::string year_month_day() {
+    static std::string yearMonthDay() {
         const std::chrono::time_point now{std::chrono::system_clock::now()};
- 
         const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(now)};
 
         // return std::format(
@@ -102,7 +94,6 @@ struct st_datetime {
         
         std::stringstream ss;
         ss << ymd.year() << static_cast<unsigned>(ymd.month()) << ymd.day();
-        
         return ss.str();
     }
 };

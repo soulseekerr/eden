@@ -15,8 +15,8 @@ namespace eden {
  * @details This class is used to define the interface for tasks
  * 
  */
-struct ITask {
-    virtual ~ITask() = default;
+struct ITaskNode {
+    virtual ~ITaskNode() = default;
     virtual Response execute() = 0;
 };
 
@@ -24,7 +24,7 @@ struct ITask {
  * @brief TaskNode class
  * @details Abstract class for tasks
  */
-class TaskNode : public ITask {
+class TaskNode : public ITaskNode {
 private:
     std::shared_ptr<Attributes> attr_;
 
@@ -66,13 +66,13 @@ struct ITaskNodeAggregate {
  * @brief TaskNodeIterator class
  * @details Concrete Implementation of the iterator
  */
-class TaskNodeIterator : public ITaskNodeIterator<std::shared_ptr<ITask>> {
+class TaskNodeIterator : public ITaskNodeIterator<std::shared_ptr<ITaskNode>> {
 private:
-    const std::vector<std::shared_ptr<ITask>>& data;
+    const std::vector<std::shared_ptr<ITaskNode>>& data;
     size_t index;
 
 public:
-    explicit TaskNodeIterator(const std::vector<std::shared_ptr<ITask>>& nodes) 
+    explicit TaskNodeIterator(const std::vector<std::shared_ptr<ITaskNode>>& nodes) 
         : data(nodes), index(0) {}
 
     bool hasNext() const override {
@@ -83,12 +83,12 @@ public:
         return index > 0;
     }
 
-    std::shared_ptr<ITask> next() override {
+    std::shared_ptr<ITaskNode> next() override {
         if (!hasNext()) throw std::out_of_range("No more elements");
         return data[index++];
     }
 
-    std::shared_ptr<ITask> prev() override {
+    std::shared_ptr<ITaskNode> prev() override {
         if (!hasPrev()) throw std::out_of_range("No previous elements");
         return data[--index];
     }
@@ -99,19 +99,19 @@ public:
  * @details Concrete Implementation of the aggregate
  */
 template <typename T>
-class TaskNodeList : public ITaskNodeAggregate<std::shared_ptr<ITask>> {
+class TaskNodeList : public ITaskNodeAggregate<std::shared_ptr<ITaskNode>> {
 private:
-    std::vector<std::shared_ptr<ITask>> tasks_;
+    std::vector<std::shared_ptr<ITaskNode>> tasks_;
 
 public:
     TaskNodeList() = default;
     virtual ~TaskNodeList() = default;
 
-    void addTask(std::shared_ptr<ITask> task) {
+    void addTask(std::shared_ptr<ITaskNode> task) {
         tasks_.push_back(std::move(task));
     }
 
-    std::unique_ptr<ITaskNodeIterator<std::shared_ptr<ITask>>> createIterator() const override {
+    std::unique_ptr<ITaskNodeIterator<std::shared_ptr<ITaskNode>>> createIterator() const override {
         return std::make_unique<TaskNodeIterator>(tasks_);
     }
 };

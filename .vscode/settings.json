@@ -65,7 +65,9 @@
         "semaphore": "cpp",
         "memory": "cpp",
         "print": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "valarray": "cpp",
+        "format": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++20"
 }

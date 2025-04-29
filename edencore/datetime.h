@@ -45,7 +45,10 @@ namespace eden {
 class DateTime {
 public:
     // Default constructor that initializes to the current time
-    DateTime() : time_point_(std::chrono::system_clock::now()), dirty_(true) {}
+    DateTime() : time_point_(std::chrono::system_clock::now()), dirty_(true) {
+        cached_string_ = formatTime("%Y-%m-%d %H:%M:%S");
+        dirty_ = false;
+    }
 
     // Constructor accepting year, month, and day
     DateTime(int year, int month, int day) : time_point_(std::chrono::system_clock::from_time_t(
@@ -108,19 +111,19 @@ public:
         return format("%H:%M:%S");
     }
 
-    [[nodiscard]] std::string year_month_day_h() const {
+    [[nodiscard]] std::string yearMonthDayHyphen() const {
         return format("%Y-%m-%d");
     }
 
-    [[nodiscard]] std::string year_month_day() const {
+    [[nodiscard]] std::string yearMonthDay() const {
         return format("%Y%m%d");
     }
 
-    [[nodiscard]] std::string year_month_h() const {
+    [[nodiscard]] std::string yearMonthHyphen() const {
         return format("%Y-%m");
     }
 
-    [[nodiscard]] std::string year_month() const {
+    [[nodiscard]] std::string yearMonth() const {
         return format("%Y%m");
     }
 
@@ -202,4 +205,3 @@ private:
 };
 
 } // namespace eden
-
