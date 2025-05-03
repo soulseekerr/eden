@@ -7,4 +7,7 @@ add_subdirectory(eden)
 add_subdirectory(edentests)
 add_subdirectory(edendaemon)
 
+add_subdirectory(edenllvm)
+
 # subdirectory edenpy is built independently using setuptools
+
