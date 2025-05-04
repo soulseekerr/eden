@@ -9,5 +9,7 @@ add_subdirectory(edendaemon)
 
 add_subdirectory(edenllvm)
 
+add_subdirectory(workfloweditor)
+
 # subdirectory edenpy is built independently using setuptools
 

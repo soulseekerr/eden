@@ -13,7 +13,12 @@
                 "${workspaceFolder}",
                 "/opt/homebrew/Cellar/llvm/19.1.7/include/c++/v1",
                 "/opt/homebrew/Cellar/llvm/19.1.7/include/c++/v1/__thread",
-                "${workspaceFolder}/debug/_deps/googletest-src/googletest/include"
+                "${workspaceFolder}/debug/_deps/googletest-src/googletest/include",
+                "${workspaceFolder}/debug/_deps/imgui-src",
+                "${workspaceFolder}/debug/_deps/imnodes-src",
+                "${workspaceFolder}/debug/_deps/imgui-src/backends",
+                "${workspaceFolder}/debug/_deps/sdl2-build/include/SDL2",
+                "${workspaceFolder}/debug/_deps/sdl2-src/include"
             ],
             "defines": [],
             "macFrameworkPath": [
