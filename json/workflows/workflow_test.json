@@ -1,0 +1,98 @@
+{
+    "workflowName": "MyFlow",
+    "attributes": {
+      "cob": "2025-04-26"
+    },
+    "tasks": [
+      {
+        "id": 1,
+        "name": "Calibration",
+        "type": "CalibrationTask",
+        "status": "Completed",
+        "input_id": 10,
+        "output_id": 11
+      },
+      {
+        "id": 2,
+        "name": "Fetch Data",
+        "type": "FetchDataTask",
+        "status": "Running",
+        "input_id": 20,
+        "output_id": 21
+      },
+      {
+        "id": 3,
+        "name": "Compute PV",
+        "type": "ComputePVTask",
+        "status": "Failed",
+        "input_id": 30,
+        "output_id": 31
+      },
+      {
+        "id": 4,
+        "name": "Compute PV",
+        "type": "ComputePVTask",
+        "status": "Failed",
+        "input_id": 40,
+        "output_id": 41
+      },
+      {
+        "id": 5,
+        "name": "Save PV",
+        "type": "SavePVTask",
+        "status": "Pending",
+        "input_id": 50,
+        "output_id": 51
+      }
+    ],
+    "deps": [
+      {
+        "after":2,
+        "before": 1
+      },
+      {
+        "after":3,
+        "before": 2
+      },
+      {
+        "after":4,
+        "before": 2
+      },
+      {
+        "after":5,
+        "before": 3
+      },
+      {
+        "after":5,
+        "before": 4
+      }
+    ],
+    "node_links": [
+      {
+        "id": 1,
+        "from": 11,
+        "to": 20
+      },
+      {
+        "id": 2,
+        "from": 21,
+        "to": 30
+      },
+      {
+        "id": 2,
+        "from": 21,
+        "to": 40
+      },
+      {
+        "id": 3,
+        "from": 31,
+        "to": 50
+      },
+      {
+        "id": 4,
+        "from": 41,
+        "to": 50
+      }
+    ]
+  }
+  

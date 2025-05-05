@@ -8,6 +8,17 @@
 #include <string>
 #include <string_view>
 
+#include "workflow/workflow.h"
+#include "task/fetchdatatask.h"
+#include "pathmanager.h"
+#include "datetime.h"
+#include "attributes.h"
+#include "context.h"
+#include "logger.h"
+#include "exceptions.h"
+
+using namespace eden;
+
 // TOCHANGE: only for example purposes
 enum class TaskStatus { Pending, Running, Done, Failed };
 
@@ -56,7 +67,124 @@ ImU32 ColorFromName(NamedColor color) {
     }
 }
 
-void ShowWorkflowEditor(std::vector<TaskNode>& nodes, std::vector<Link>& links) {
+std::string getJsonFile(PathManager& pm, const EdenFileType& fileType, const std::string& filename) {
+    auto path = pm.getFilePath(fileType, filename);
+    if (!path) {
+        std::string label;
+        switch (fileType) {
+            case EdenFileType::Workflow: label = "Workflow"; break;
+            case EdenFileType::Config: label = "Config"; break;
+            default: label = "Unknown"; break;
+        }
+        throw MissingFileException(label, filename);
+    }
+    return path->string();
+}
+
+WorkflowUPtr loadWorkflow() {
+    auto& log = LoggerManager::getInstance();
+    log.addLogger(std::make_unique<LoggerConsole>(LOG_LEVEL::LOG_DEBUG));
+    
+    auto& pathManager = PathManager::getInstance();
+
+    // Inputs of the binary - harcoded here
+    auto cob = DateTime(2024, 6, 3);
+    // Attributes cannot be modified further but copied among other task instances
+    const AttributeSPtr& attr = std::make_shared<Attributes>(cob);
+    std::string strCob = attr->cob().yearMonthDayHyphen();
+    log.log("COB: {}", strCob);
+
+    ContextSPtr wfContext;
+    WorkflowUPtr wf;
+
+    try {
+        const auto workflowFile = getJsonFile(pathManager, EdenFileType::Workflow, "workflow_test.json");
+        log.logInfo("Workflow file: {}", workflowFile);
+    
+        const auto contextFile = getJsonFile(pathManager, EdenFileType::Workflow, "context_test.json");
+        log.logInfo("Context file: {}", contextFile);
+
+        wfContext = std::make_shared<JsonContext>(contextFile);
+
+        log.logInfo("Context  successfully created");
+
+        wf = std::make_unique<Workflow>("MyFlow", attr, wfContext);
+        wf->loadJsonFile(workflowFile);
+
+    } catch (const MissingFileException& e) {
+        log.logError("Missing file: {}", e.what());
+        exit(-1);
+    }
+
+    log.log("Workflow successfully created");
+    log.log("Workflow name: {} - COB: {}", wf->name(), strCob);
+
+    return wf;
+}
+
+void ShowWorkflowEditor(WorkflowUPtr& workflow) {
+    ImGui::Begin("Workflow Editor");
+    ImNodes::BeginNodeEditor();
+
+    auto& tasks = workflow->tasks();
+    for (const auto& [id, task] : tasks) {
+        // std::cout << "Task ID: " << id << ", Name: " << task->name() << "\n";
+
+        switch (task->status) {
+            case ITask::Status::Completed:
+                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGreen));
+                break;
+            case ITask::Status::Running:
+                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightOrange));
+                break;
+            case ITask::Status::Failed:
+                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightRed));
+                break;
+            default:
+                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGrey));
+                break;
+        }
+
+        ImNodes::BeginNode(task->ID());
+
+        // This needs to be called once 
+        static bool layoutOnce = true;
+        if (layoutOnce) {
+            for (const auto& [id, task] : tasks) {
+                ImNodes::SetNodeEditorSpacePos(id, ImVec2(250.0f * id, 100.0f + 50.0f * id));
+            }
+            layoutOnce = false;
+        }
+
+        ImNodes::BeginNodeTitleBar();
+        ImGui::TextUnformatted(std::format("ID {} {}", task->ID(), task->name().c_str()).c_str());
+        ImNodes::EndNodeTitleBar();
+
+        ImNodes::BeginInputAttribute(task->inputID());
+        ImGui::Text("In");
+        ImNodes::EndInputAttribute();
+
+        ImNodes::BeginOutputAttribute(task->outputID());
+        ImGui::Text("Out");
+        ImNodes::EndOutputAttribute();
+
+        ImNodes::EndNode();
+        ImNodes::PopColorStyle();
+    }
+
+    auto& links = workflow->links();
+    // for (const auto& link : links) {
+    for (const auto& [taskId, pairs] : links) {
+        for (const auto& [from, to] : pairs) {
+            ImNodes::Link(taskId, from, to);
+        }
+    }
+
+    ImNodes::EndNodeEditor();
+    ImGui::End();
+}
+
+void ShowWorkflowEditorExample(std::vector<TaskNode>& nodes, std::vector<Link>& links) {
     ImGui::Begin("Workflow Editor");
     ImNodes::BeginNodeEditor();
 
@@ -148,6 +276,8 @@ int main(int, char**) {
         {3, 31, 40}   // Compute PV → Save PV
     };
 
+    auto workflow = loadWorkflow();
+
     bool running = true;
     while (running) {
         SDL_Event event;
@@ -161,7 +291,8 @@ int main(int, char**) {
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        ShowWorkflowEditor(nodes, links);
+        // ShowWorkflowEditorExample(nodes, links);
+        ShowWorkflowEditor(workflow);
 
         ImGui::Render();
         glViewport(0, 0, 1280, 720);

@@ -1,0 +1,7 @@
+{
+    "context": {
+      "url": "https://api.example.com/data",
+      "timeoutSeconds": 5
+    }
+  }
+  

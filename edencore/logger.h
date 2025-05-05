@@ -103,6 +103,7 @@ public:
         return std::vformat(rt_fmt_str, std::make_format_args(args...));
     }
 
+    // info: std::format (and std::vformat) does not accept std::string_view or std::string by reference.
     template<typename... Args>
     void log(std::string_view rt_fmt_str, Args&&... args) {
 

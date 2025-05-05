@@ -31,7 +31,7 @@ void LoggerConsole::write(const LOG_LEVEL level, const std::string& s) {
 
     auto str = color_code + level_code + s + reset_code;
 
-    std::cout << str << std::endl;
+    std::cout << str << '\n';
 }
 
 LoggerFile::LoggerFile(const LOG_LEVEL level, const std::string& fileName) 
@@ -46,13 +46,13 @@ LoggerFile::LoggerFile(const LOG_LEVEL level, const std::string& fileName)
         throw LoggerException("Error: The log file was not opened.");
 
     // File is opened
-    file_ << "EDEN Log file." << std::endl;
+    file_ << "EDEN Log file." << '\n';
 }
 
 LoggerFile::~LoggerFile() {}
 
 void LoggerFile::write(const LOG_LEVEL level, const std::string& s) {
-    file_ << DateTime().toString() << ": " << s << std::endl;
+    file_ << DateTime().toString() << ": " << s << '\n';
 }
 
 void LoggerManager::addLogger(std::unique_ptr<Logger> logger) {
@@ -60,5 +60,5 @@ void LoggerManager::addLogger(std::unique_ptr<Logger> logger) {
 }
 
 void LoggerManager::showInstanceAddress() const {
-    std::cout << "LoggerManager instance: " << this << std::endl;
+    std::cout << "LoggerManager instance: " << this << '\n';
 }

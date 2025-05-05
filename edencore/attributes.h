@@ -36,4 +36,6 @@ public:
     _ALWAYS_INLINE_ const DateTime& cob() const { return cob_; }
 };
 
+using AttributeSPtr = std::shared_ptr<Attributes>;
+
 } // namespace eden

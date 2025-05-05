@@ -22,7 +22,8 @@ set(SOURCES
     vector.cpp
     vector_safe.cpp
     pair.cpp
-    randomnumbers.cpp)
+    randomnumbers.cpp
+    threadpool.cpp)
 
 add_library(libfmt SHARED IMPORTED)
 add_library(${MY_LIB_NAME} SHARED ${SOURCES})

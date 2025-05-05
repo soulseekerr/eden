@@ -42,6 +42,26 @@
         ],
         "preLaunchTask": "build"
       },
+      {
+        "name": "Debug WorkflowEditor with CMake",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "/Users/soulseeker/Projects/GitHub/eden_project/eden/debug/Debug/bin/workfloweditor",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "/Users/soulseeker/Projects/GitHub/eden_project/eden",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "lldb", // Use lldb instead of gdb
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for lldb",
+            "text": "settings set target.prefer-dynamic-value run-target",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build"
+      },
     ]
   }
   
