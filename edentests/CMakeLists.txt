@@ -48,7 +48,8 @@ set(SOURCES_TEST
     quick_sort_iterative_test.cpp
     quick_sort_mt_test.cpp
     task_test.cpp
-    workflow_test.cpp)
+    workflow_test.cpp
+    dataframe_test.cpp)
 
 find_package(fmt)
 
