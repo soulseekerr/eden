@@ -3,8 +3,15 @@
 #include <stdexcept>
 #include <algorithm>
 
+#include <nlohmann/json.hpp>
+// #include <imgui.h>
+// #include <imnodes.h>
+#include <fstream>
+
+
 namespace eden {
 
+// dot -Tpng workflow.dot -o workflow.png
 void Workflow::exportGraphviz(std::ostream& os) const {
     os << "digraph Workflow {\n";
     os << "  rankdir=LR;\n"; // left to right layout
@@ -28,6 +35,7 @@ void Workflow::exportGraphviz(std::ostream& os) const {
         os << "  \"" << id << "\" [style=filled, fillcolor=" << color << "];\n";
     }
   
+    // TOFIX: wrong output in the dot file
     for (const auto& [after, befores] : deps_) {
         for (const auto& before : befores) {
             os << "  \"" << before << "\" -> \"" << after << "\";\n";
@@ -35,90 +43,6 @@ void Workflow::exportGraphviz(std::ostream& os) const {
     }
   
     os << "}\n";
-}
-
-void Workflow::loadJsonFile(const std::string& jsonFile) {
-    // Load the JSON file and parse it to set up tasks and dependencies
-    std::ifstream file(jsonFile);
-    if (!file.is_open()) {
-        throw std::runtime_error("Could not open JSON file: " + jsonFile);
-    }
-    nlohmann::json data;
-    file >> data;
-
-    const auto& tasks = data["tasks"];
-    for (const auto& jsonTask : tasks) {
-
-      auto taskType = jsonTask["type"].get<std::string>();
-      auto taskID = jsonTask["id"].get<int>();
-      auto taskName = jsonTask["name"].get<std::string>();
-      auto status = jsonTask["status"].get<std::string>();
-      auto inputID = jsonTask["input_id"].get<int>();
-      auto outputID = jsonTask["output_id"].get<int>();
-      
-      TaskSPtr task;
-      if (taskType == "CalibrationTask") {
-        
-        task = std::make_shared<FetchDataTask>(taskID, taskName, inputID, outputID);
-   
-      } else if (taskType == "FetchDataTask") {
-        
-        task = std::make_shared<FetchDataTask>(taskID, taskName, inputID, outputID);
-   
-      } else if (taskType == "ComputePVTask") {
-        
-        task = std::make_shared<FetchDataTask>(taskID, taskName, inputID, outputID);
-   
-      } else if (taskType == "SavePVTask") {
-        
-        task = std::make_shared<FetchDataTask>(taskID, taskName, inputID, outputID);
-   
-      } else {
-        
-        throw std::runtime_error("Unknown task type: " + taskType);
-      }
-
-      if (status == "Pending") {
-        task->status = ITask::Status::Pending;
-      } else if (status == "Running") {
-        task->status = ITask::Status::Running;
-      } else if (status == "Completed") {
-        task->status = ITask::Status::Completed;
-      } else if (status == "Failed") {
-        task->status = ITask::Status::Failed;
-      } else {
-        throw std::runtime_error("Unknown status: " + status);
-      }
-
-      addTask(taskID, task);
-    }
-
-    const auto& deps = data["deps"];
-    for (const auto& jsonDep : deps) {
-
-        auto after = jsonDep["after"].get<int>();
-        auto before = jsonDep["before"].get<int>();
-
-        dependsOn(after, before);
-    }
-
-    const auto& links = data["node_links"];
-    for (const auto& jsonLinks : links) {
-
-        auto ID = jsonLinks["id"].get<TaskID>();
-        auto from = jsonLinks["from"].get<int>();
-        auto to = jsonLinks["to"].get<int>();
-
-        links_[ID].emplace_back(from, to);
-    }
-
-    // for (const auto& [taskId, pairs] : links_) {
-    //     std::cout << "Links for task: " << taskId << "\n";
-    //     for (const auto& [from, to] : pairs) {
-    //         std::cout << "  from: " << from << ", to: " << to << "\n";
-    //     }
-    // }
-
 }
 
 void Workflow::run(IExecutor& executor) {

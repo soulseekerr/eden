@@ -46,7 +46,9 @@ set(SOURCES_TEST
     merge_sort_test.cpp
     quick_sort_test.cpp
     quick_sort_iterative_test.cpp
-    quick_sort_mt_test.cpp)
+    quick_sort_mt_test.cpp
+    task_test.cpp
+    workflow_test.cpp)
 
 find_package(fmt)
 

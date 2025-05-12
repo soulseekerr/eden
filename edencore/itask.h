@@ -44,6 +44,31 @@ public:
     const int& inputID() const noexcept { return inputID_; }
     const int& outputID() const noexcept { return outputID_; }
     const std::string& name() const noexcept { return taskName_; }
+
+    std::string statusString() const noexcept{
+        switch (status) {
+            case Status::Pending: return "Pending";
+            case Status::Running: return "Running";
+            case Status::Completed: return "Completed";
+            case Status::Failed: return "Failed";
+            default: return "Pending";
+        }
+    }
+
+    void setStatusFromString(const std::string& statusStr) {
+        if (statusStr == "Pending") {
+            status = Status::Pending;
+        } else if (statusStr == "Running") {
+            status = Status::Running;
+        } else if (statusStr == "Completed") {
+            status = Status::Completed;
+        } else if (statusStr == "Failed") {
+            status = Status::Failed;
+        }
+        else {
+            throw std::invalid_argument("Invalid status string: " + statusStr);
+        }
+    }
 };
 
 using TaskSPtr = std::shared_ptr<ITask>;

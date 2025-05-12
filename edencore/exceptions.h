@@ -17,4 +17,10 @@ public:
         : std::runtime_error(std::format("MissingFileException: Type {} - {}", fileType, message)) {}
 };
 
+class InvalidArgumentException : public std::invalid_argument {
+    public:
+        explicit InvalidArgumentException(const std::string& fileType, const std::string& message)
+            : std::invalid_argument(std::format("InvalidArgumentException: Type {} - {}", fileType, message)) {}
+    };
+
 } // namespace eden

@@ -9,6 +9,7 @@
 #include <string_view>
 
 #include "workflow/workflow.h"
+#include "workflow/workflowserializer.h"
 #include "task/fetchdatatask.h"
 #include "pathmanager.h"
 #include "datetime.h"
@@ -20,21 +21,21 @@
 using namespace eden;
 
 // TOCHANGE: only for example purposes
-enum class TaskStatus { Pending, Running, Done, Failed };
+// enum class TaskStatus { Pending, Running, Done, Failed };
 
-struct TaskNode {
-    int id;
-    std::string name;
-    TaskStatus status;
-    int input_id;
-    int output_id;
-};
+// struct TaskNode {
+//     int id;
+//     std::string name;
+//     TaskStatus status;
+//     int input_id;
+//     int output_id;
+// };
 
-struct Link {
-    int id;
-    int from;
-    int to;
-};
+// struct Link {
+//     int id;
+//     int from;
+//     int to;
+// };
 // TOCHANGE: only for example purposes
 
 enum class NamedColor {
@@ -81,6 +82,47 @@ std::string getJsonFile(PathManager& pm, const EdenFileType& fileType, const std
     return path->string();
 }
 
+nlohmann::json saveNodeLayout(const WorkflowUPtr& wf) {
+    nlohmann::json j;
+    for (auto& t : wf->tasks()) {
+        ImVec2 pos = ImNodes::GetNodeEditorSpacePos(t.first);
+        j["nodes"].push_back({
+            {"id", t.first},
+            {"x", pos.x},
+            {"y", pos.y}
+        });
+    }
+    return j;
+}
+
+void loadNodeLayout(const nlohmann::json& j) {
+    if (!j.contains("nodes")) return;
+    for (const auto& node : j["nodes"]) {
+        int id = node["id"];
+        float x = node["x"];
+        float y = node["y"];
+        ImNodes::SetNodeEditorSpacePos(id, ImVec2(x, y));
+    }
+}
+
+// Optional: Save to file
+void saveLayoutToFile(const std::string& filename, const WorkflowUPtr& wf) {
+    if (!wf) return;
+
+    // wf->saveJsonFile(filename);
+    WorkflowSerializer serializer;
+    serializer.save(wf, filename);
+}
+
+// Optional: Load from file
+void loadLayoutFromFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) return;
+    nlohmann::json j;
+    file >> j;
+    loadNodeLayout(j);
+}
+
 WorkflowUPtr loadWorkflow() {
     auto& log = LoggerManager::getInstance();
     log.addLogger(std::make_unique<LoggerConsole>(LOG_LEVEL::LOG_DEBUG));
@@ -109,7 +151,8 @@ WorkflowUPtr loadWorkflow() {
         log.logInfo("Context  successfully created");
 
         wf = std::make_unique<Workflow>("MyFlow", attr, wfContext);
-        wf->loadJsonFile(workflowFile);
+        WorkflowSerializer wfSerializer;
+        wfSerializer.load(wf, workflowFile);
 
     } catch (const MissingFileException& e) {
         log.logError("Missing file: {}", e.what());
@@ -124,6 +167,7 @@ WorkflowUPtr loadWorkflow() {
 
 void ShowWorkflowEditor(WorkflowUPtr& workflow) {
     ImGui::Begin("Workflow Editor");
+
     ImNodes::BeginNodeEditor();
 
     auto& tasks = workflow->tasks();
@@ -184,62 +228,62 @@ void ShowWorkflowEditor(WorkflowUPtr& workflow) {
     ImGui::End();
 }
 
-void ShowWorkflowEditorExample(std::vector<TaskNode>& nodes, std::vector<Link>& links) {
-    ImGui::Begin("Workflow Editor");
-    ImNodes::BeginNodeEditor();
+// void ShowWorkflowEditorExample(std::vector<TaskNode>& nodes, std::vector<Link>& links) {
+//     ImGui::Begin("Workflow Editor");
+//     ImNodes::BeginNodeEditor();
 
-    for (const auto& node : nodes) {
+//     for (const auto& node : nodes) {
 
-        // Optional: style by task status
-        switch (node.status) {
-            case TaskStatus::Done:
-                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGreen));
-                break;
-            case TaskStatus::Running:
-                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightOrange));
-                break;
-            case TaskStatus::Failed:
-                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightRed));
-                break;
-            default:
-                ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGrey));
-                break;
-        }
+//         // Optional: style by task status
+//         switch (node.status) {
+//             case TaskStatus::Done:
+//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGreen));
+//                 break;
+//             case TaskStatus::Running:
+//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightOrange));
+//                 break;
+//             case TaskStatus::Failed:
+//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightRed));
+//                 break;
+//             default:
+//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGrey));
+//                 break;
+//         }
 
-        ImNodes::BeginNode(node.id);
+//         ImNodes::BeginNode(node.id);
 
-        // This needs to be called once 
-        static bool layoutOnce = true;
-        if (layoutOnce) {
-            for (const auto& node : nodes) {
-                ImNodes::SetNodeEditorSpacePos(node.id, ImVec2(300.0f * node.id, 100.0f + 50.0f * node.id));
-            }
-            layoutOnce = false;
-        }
+//         // This needs to be called once 
+//         static bool layoutOnce = true;
+//         if (layoutOnce) {
+//             for (const auto& node : nodes) {
+//                 ImNodes::SetNodeEditorSpacePos(node.id, ImVec2(300.0f * node.id, 100.0f + 50.0f * node.id));
+//             }
+//             layoutOnce = false;
+//         }
 
-        ImNodes::BeginNodeTitleBar();
-        ImGui::TextUnformatted(node.name.c_str());
-        ImNodes::EndNodeTitleBar();
+//         ImNodes::BeginNodeTitleBar();
+//         ImGui::TextUnformatted(node.name.c_str());
+//         ImNodes::EndNodeTitleBar();
 
-        ImNodes::BeginInputAttribute(node.input_id);
-        ImGui::Text("In");
-        ImNodes::EndInputAttribute();
+//         ImNodes::BeginInputAttribute(node.input_id);
+//         ImGui::Text("In");
+//         ImNodes::EndInputAttribute();
 
-        ImNodes::BeginOutputAttribute(node.output_id);
-        ImGui::Text("Out");
-        ImNodes::EndOutputAttribute();
+//         ImNodes::BeginOutputAttribute(node.output_id);
+//         ImGui::Text("Out");
+//         ImNodes::EndOutputAttribute();
 
-        ImNodes::EndNode();
-        ImNodes::PopColorStyle();
-    }
+//         ImNodes::EndNode();
+//         ImNodes::PopColorStyle();
+//     }
 
-    for (const auto& link : links) {
-        ImNodes::Link(link.id, link.from, link.to);
-    }
+//     for (const auto& link : links) {
+//         ImNodes::Link(link.id, link.from, link.to);
+//     }
 
-    ImNodes::EndNodeEditor();
-    ImGui::End();
-}
+//     ImNodes::EndNodeEditor();
+//     ImGui::End();
+// }
 
 int main(int, char**) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -263,18 +307,18 @@ int main(int, char**) {
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init("#version 150");
 
-    std::vector<TaskNode> nodes = {
-        {1, "Load Market Data", TaskStatus::Done, 10, 11},
-        {2, "Calibrate Market Data", TaskStatus::Running, 20, 21},
-        {3, "Compute PV", TaskStatus::Pending, 30, 31},
-        {4, "Save PV", TaskStatus::Pending, 40, 41}
-    };
+    // std::vector<TaskNode> nodes = {
+    //     {1, "Load Market Data", TaskStatus::Done, 10, 11},
+    //     {2, "Calibrate Market Data", TaskStatus::Running, 20, 21},
+    //     {3, "Compute PV", TaskStatus::Pending, 30, 31},
+    //     {4, "Save PV", TaskStatus::Pending, 40, 41}
+    // };
     
-    std::vector<Link> links = {
-        {1, 11, 20},  // Load Market Data → Calibrate Market Data
-        {2, 21, 30},  // Calibrate Market Data → Compute PV
-        {3, 31, 40}   // Compute PV → Save PV
-    };
+    // std::vector<Link> links = {
+    //     {1, 11, 20},  // Load Market Data → Calibrate Market Data
+    //     {2, 21, 30},  // Calibrate Market Data → Compute PV
+    //     {3, 31, 40}   // Compute PV → Save PV
+    // };
 
     auto workflow = loadWorkflow();
 
@@ -293,6 +337,14 @@ int main(int, char**) {
 
         // ShowWorkflowEditorExample(nodes, links);
         ShowWorkflowEditor(workflow);
+
+        if (ImGui::Button("Save Layout")) {
+            saveLayoutToFile("layout.json", workflow);
+        }
+        
+        if (ImGui::Button("Load Layout")) {
+            // workflow = loadLayoutFromFile("layout.json");
+        }
 
         ImGui::Render();
         glViewport(0, 0, 1280, 720);

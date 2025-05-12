@@ -14,6 +14,7 @@ include_directories((BEFORE "../edenanalytics"))
 
 set(SOURCES
     workflow/workflow.cpp
+    workflow/workflowserializer.cpp
     core/yieldcurve.cpp
     core/creditcurve.cpp
     models/hullwhite_1factor.cpp

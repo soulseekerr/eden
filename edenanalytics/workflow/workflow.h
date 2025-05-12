@@ -11,11 +11,25 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
+
+// TODO: ranges, variants, span, coroutines, concepts
+// TODO: timeouts, retry, priorities
+// TODO: protobuf google 
+// Boost
+
 namespace eden {
 
 class IWorkflow {
   virtual void run(IExecutor& executor) = 0;
 };
+
+// struct NodeLayout {
+//     int id;
+//     float x;
+//     float y;
+// };
+
+// using LayoutMap = std::unordered_map<int, ImVec2>;
 
 /**
  * @brief Workflow class
@@ -55,7 +69,6 @@ public:
   void run(IExecutor& executor) override;
 
   void exportGraphviz(std::ostream& os) const;
-  void loadJsonFile(const std::string& jsonFile);
 
   [[nodiscard]] ITask::Status statusOf(const TaskID& id) const { return tasks_.at(id)->status; }
   [[nodiscard]] const std::string& name() const noexcept { return name_; }
@@ -74,6 +87,12 @@ public:
     deps_[after].push_back(before);
     return *this;
   }
+
+  Workflow& addLink(TaskID id, int from, int to) {
+    links_[id].emplace_back(from, to);
+    return *this;
+  }
+
 };
 
 using WorkflowUPtr = std::unique_ptr<Workflow>;

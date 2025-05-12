@@ -14,6 +14,7 @@
 #include "concurrency.h"
 #include "threadpool.h"
 #include "workflow/workflow.h"
+#include "workflow/workflowserializer.h"
 #include "task/fetchdatatask.h" 
 #include "pathmanager.h"
 #
@@ -27,36 +28,26 @@
 
 using namespace eden;
 
-
-class Factory {
-public:
-    static WorkflowUPtr createWorkflow(const std::string& name, const AttributeSPtr& attributes, ContextSPtr& context, const std::string& jsonFile) {
-        WorkflowUPtr wf = std::make_unique<Workflow>(name, attributes, context);
-        wf->loadJsonFile(jsonFile);
-        return wf;
+static TaskSPtr createTask(int taskID, const std::string& taskType, const AttributeSPtr& attributes, ContextSPtr& context) {
+    if (taskType == "FetchDataTask") {
+         TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
+         task->prepare(attributes, context);
+         return task;
+    } else if (taskType == "CalibrationTask") {
+        TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
+         task->prepare(attributes, context);
+         return task;
+    } else if (taskType == "ComputePVTask") {
+        TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
+         task->prepare(attributes, context);
+         return task;
+    } else if (taskType == "SavePVTask") {
+        TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
+        task->prepare(attributes, context);
+        return task;
     }
-
-    static TaskSPtr createTask(int taskID, const std::string& taskType, const AttributeSPtr& attributes, ContextSPtr& context) {
-        if (taskType == "FetchDataTask") {
-             TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
-             task->prepare(attributes, context);
-             return task;
-        } else if (taskType == "CalibrationTask") {
-            TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
-             task->prepare(attributes, context);
-             return task;
-        } else if (taskType == "ComputePVTask") {
-            TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
-             task->prepare(attributes, context);
-             return task;
-        } else if (taskType == "SavePVTask") {
-            TaskSPtr task = std::make_shared<FetchDataTask>(taskID, "FetchDataTask", taskID, taskID + 1);
-            task->prepare(attributes, context);
-            return task;
-        }
-        throw std::runtime_error("Unknown task type: " + taskType);
-    }
-};
+    throw std::runtime_error("Unknown task type: " + taskType);
+}
 
 std::string getJsonFile(PathManager& pm, const EdenFileType& fileType, const std::string& filename) {
     auto path = pm.getFilePath(fileType, filename);
@@ -109,7 +100,10 @@ int main() {
 
         log.logInfo("Context  successfully created");
 
-        wf = Factory::createWorkflow("MyFlow", attr, wfContext, workflowFile);
+        wf = std::make_unique<Workflow>("MyFlow", attr, wfContext);
+
+        WorkflowSerializer wfSerializer;
+        wfSerializer.load(wf, workflowFile);
 
     } catch (const MissingFileException& e) {
         log.logError("Missing file: {}", e.what());
@@ -121,14 +115,14 @@ int main() {
     
     ContextSPtr taskContext = std::make_shared<TaskContext>();
 
-    wf->addTask(1, Factory::createTask(1, "CalibrationTask", attr, taskContext))
-      .addTask(2, Factory::createTask(2, "ComputePVTask", attr, taskContext))
-      .addTask(3, Factory::createTask(3, "ComputePVTask", attr, taskContext))
-      .addTask(4, Factory::createTask(4, "ComputePVTask", attr, taskContext))
-      .addTask(5, Factory::createTask(5, "SavePVTask", attr, taskContext))
-      .addTask(6, Factory::createTask(6, "SavePVTask", attr, taskContext))
-      .addTask(7, Factory::createTask(7, "SavePVTask", attr, taskContext))
-      .addTask(8, Factory::createTask(8, "FetchDataTask", attr, taskContext))
+    wf->addTask(1, createTask(1, "CalibrationTask", attr, taskContext))
+      .addTask(2, createTask(2, "ComputePVTask", attr, taskContext))
+      .addTask(3, createTask(3, "ComputePVTask", attr, taskContext))
+      .addTask(4, createTask(4, "ComputePVTask", attr, taskContext))
+      .addTask(5, createTask(5, "SavePVTask", attr, taskContext))
+      .addTask(6, createTask(6, "SavePVTask", attr, taskContext))
+      .addTask(7, createTask(7, "SavePVTask", attr, taskContext))
+      .addTask(8, createTask(8, "FetchDataTask", attr, taskContext))
       .dependsOn(2, 1)
       .dependsOn(3, 1)
       .dependsOn(4, 1)
