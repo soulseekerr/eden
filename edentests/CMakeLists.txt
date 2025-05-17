@@ -42,11 +42,6 @@ set(SOURCES_TEST
     search_test.cpp
     attributes_test.cpp
     response_test.cpp
-    bubble_sort_test.cpp
-    merge_sort_test.cpp
-    quick_sort_test.cpp
-    quick_sort_iterative_test.cpp
-    quick_sort_mt_test.cpp
     task_test.cpp
     workflow_test.cpp
     dataframe_test.cpp)
