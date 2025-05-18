@@ -36,11 +36,11 @@ Eden is a modern C++ workflow engine designed for dependency-based task executio
 +--------+              +---------------+             +--------------+  
      |                          ^                             |  
      v                          |                             v  
-Console / File           IExecutor Interface         +----------------+  
-                                                 --> | Task Instances |  
-                                                 --> |  (ITask impls) |  
-                                                     +----------------+  
-
+Console / File           IExecutor Interface         +----------------+   
+                                                 --> | Task Instances |   
+                                                 --> |  (ITask impls) |   
+                                                     +----------------+   
+  
 
 🧑‍💻 Requirements
 
