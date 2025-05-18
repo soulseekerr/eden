@@ -8,6 +8,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU|AppleClang")
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=modernize-*,-warnings-as-errors=*")
+endif()
+
 include_directories(BEFORE "/opt/homebrew/Cellar/fmt/10.1.1/include")
 include_directories(BEFORE "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
 
@@ -18,8 +23,6 @@ set(SOURCES
     attributes.cpp 
     sort.cpp 
     redblacktree.cpp 
-    hashset.cpp
-    vector.cpp
     vector_safe.cpp
     pair.cpp
     randomnumbers.cpp

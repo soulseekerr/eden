@@ -11,7 +11,6 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "vector.h"
 #include "core/yieldcurve.h"
 
 namespace edenanalytics {

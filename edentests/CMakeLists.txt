@@ -34,7 +34,6 @@ set(SOURCES_TEST
     swap_test.cpp 
     graph_test.cpp
     semaphore_test.cpp
-    hashset_test.cpp
     pair_test.cpp
     vector_test.cpp
     exceptions_test.cpp

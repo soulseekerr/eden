@@ -7,7 +7,7 @@
 TEST(SwapTest, BasicAssertions) {
     double a = 0.1, sigma = 0.01; 
 
-    eden::Vector_t<double> marketPrices;
+    std::vector<double> marketPrices;
     marketPrices.push_back(0.254);
     marketPrices.push_back(0.230);
     marketPrices.push_back(0.2);
@@ -19,7 +19,7 @@ TEST(SwapTest, BasicAssertions) {
     marketPrices.push_back(0.3);
     marketPrices.push_back(0.32);
 
-    eden::Vector_t<double> times;
+    std::vector<double> times;
     times.push_back(0.5);
     times.push_back(1.0);
     times.push_back(1.5);

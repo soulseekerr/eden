@@ -3,7 +3,7 @@
 
 namespace edenanalytics {
 
-YieldCurve::YieldCurve(const eden::Vector_t<double>& maturities, const eden::Vector_t<double>& values) 
+YieldCurve::YieldCurve(const std::vector<double>& maturities, const std::vector<double>& values) 
     : maturities_(maturities), values_(values) {
     
     if (maturities_.size() != values_.size()) 

@@ -9,18 +9,17 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "vector.h"
 #include "core.h"
 
 namespace edenanalytics {
 
 class YieldCurve {
 private:
-    eden::Vector_t<double> maturities_;
-    eden::Vector_t<double> values_;
+    std::vector<double> maturities_;
+    std::vector<double> values_;
     
 public:
-    YieldCurve(const eden::Vector_t<double>& maturities, const eden::Vector_t<double>& values);    
+    YieldCurve(const std::vector<double>& maturities, const std::vector<double>& values);    
     virtual ~YieldCurve() = default;
     
     _ALWAYS_INLINE_ double operator[](size_t index) const { 
