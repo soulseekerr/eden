@@ -8,7 +8,7 @@ Eden is a modern C++ workflow engine designed for dependency-based task executio
 
 ## 📦 Features
 
-✅ Core Engine
+✅ **Core Engine**
 - Workflow Execution with task dependencies  
 - Multithreaded Scheduler using ThreadPool with std::jthread  
 - Task Interface (ITask) with lifecycle tracking  
@@ -18,28 +18,11 @@ Eden is a modern C++ workflow engine designed for dependency-based task executio
 - JSON-based Serialization for workflows and context  
 
 
-✅ Visual Workflow Editor
+✅ **Visual Workflow Editor**
 - Built with ImGui + ImNodes
 - Drag-and-drop graph layout
 - Dynamic status coloring (Running, Completed, Failed, etc.)
 - Save/load workflow layout with preserved node positions
-
-
-                        +---------------------+  
-                        |     Main Engine     |  
-                        +---------------------+  
-                                |  
-    +---------------------------+----------------------------+  
-    |                            |                            |  
-+--------+              +---------------+             +--------------+  
-| Logger | <--------->  | Thread Pool   |  <--------> | Workflow     |  
-+--------+              +---------------+             +--------------+  
-     |                          ^                             |  
-     v                          |                             v  
-Console / File           IExecutor Interface         +----------------+   
-                                                 --> | Task Instances |   
-                                                 --> |  (ITask impls) |   
-                                                     +----------------+   
   
 
 🧑‍💻 Requirements
@@ -58,8 +41,6 @@ SDL2 + OpenGL3 (for editor)
 outputs:
     build/Debug/bin
     build/Debug/lib
-
-Build
 
 
 🚀 Getting Started
