@@ -19,6 +19,17 @@ Eden is a modern C++ workflow engine designed for dependency-based task executio
 
 
 **ThreadPool**  
+This module implements a high-performance, lock-free ThreadPool designed for concurrent task execution.
+
+Key Features:
+
+Lock-free job stack using std::atomic<Node*>
+
+Cooperative cancellation via std::jthread and std::stop_token
+
+Task scheduling with a std::counting_semaphore
+
+Pluggable thread count provider
 The main thread pool implementation:  
 
 - Starts n worker threads via std::jthread  
