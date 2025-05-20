@@ -18,6 +18,32 @@ Eden is a modern C++ workflow engine designed for dependency-based task executio
 - JSON-based Serialization for workflows and context  
 
 
+**ThreadPool**  
+The main thread pool implementation:  
+
+- Starts n worker threads via std::jthread  
+- Maintains a lock-free stack of tasks  
+- Synchronizes threads using std::counting_semaphore  
+- Supports graceful shutdown via RAII  
+
+Construction:  
+
+- Use explicit thread count or a provider  
+
+- Enqueue:  
+Push a job onto the atomic stack  
+Signal the semaphore to wake up a thread  
+
+- Worker Loop:  
+Wait on semaphore  
+CAS pop a task  
+Execute the task, loop until cancelled
+
+- Destruction:  
+Release all semaphores to unblock  
+std::jthread automatically calls request_stop() and joins  
+
+
 ✅ **Visual Workflow Editor**
 - Built with ImGui + ImNodes
 - Drag-and-drop graph layout
