@@ -7,7 +7,7 @@
 
 namespace eden {
 
-using TaskID  = int;
+using TaskID  = int32_t;
 
 /**
   * * @brief Interface for all tasks in the workflow.

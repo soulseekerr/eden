@@ -42,3 +42,5 @@ release/**
 edenpy/*.egg-info
 edenpy/dist/**
 edenpy/myenv/**
+_deps/**
+CMakeFiles/**

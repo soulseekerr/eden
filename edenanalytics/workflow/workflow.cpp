@@ -45,7 +45,7 @@ void Workflow::exportGraphviz(std::ostream& os) const {
     os << "}\n";
 }
 
-void Workflow::run(IExecutor& executor) {
+void Workflow::run(IThreadExecutor& executor) {
     std::cout << ">>> Workflow::run() started\n";
 
     // 1) Build the dependency graph: children_ and remaining_

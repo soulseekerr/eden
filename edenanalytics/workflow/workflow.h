@@ -2,7 +2,8 @@
 
 #include "attributes.h"
 #include "context.h"
-#include "executor.h"
+// #include "core/executor.h"
+#include "threadpool.h"
 #include "itask.h"
 #include <atomic>
 #include <latch>
@@ -20,7 +21,7 @@
 namespace eden {
 
 class IWorkflow {
-  virtual void run(IExecutor& executor) = 0;
+  virtual void run(IThreadExecutor& executor) = 0;
 };
 
 // struct NodeLayout {
@@ -35,7 +36,7 @@ class IWorkflow {
  * @brief Workflow class
  * @details This class is used to store the workflow composed of tasks and its dependencies
  */
-class Workflow : public IWorkflow{
+class Workflow : public IWorkflow {
 private:
     // Name of Workflow
     std::string name_;
@@ -66,7 +67,7 @@ public:
   {}
 
   // Run with any executor; each task sees the same attrs_ and ctx_.
-  void run(IExecutor& executor) override;
+  void run(IThreadExecutor& executor);
 
   void exportGraphviz(std::ostream& os) const;
 
