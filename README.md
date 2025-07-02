@@ -61,7 +61,7 @@ std::jthread automatically calls request_stop() and joins
 - Dynamic status coloring (Running, Completed, Failed, etc.)
 - Save/load workflow layout with preserved node positions
 
-![Alt text](EdenWorkkflowEditor.png)
+![Alt text](EdenWorkflowEditor.png)
 
 🧑‍💻 Requirements
 
