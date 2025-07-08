@@ -2,11 +2,13 @@
 #include "imnodes.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "ImGuiFileDialog.h"
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <vector>
 #include <string>
 #include <string_view>
+#include <fstream>
 
 #include "workflow/workflow.h"
 #include "workflow/workflowserializer.h"
@@ -20,23 +22,7 @@
 
 using namespace eden;
 
-// TOCHANGE: only for example purposes
-// enum class TaskStatus { Pending, Running, Done, Failed };
-
-// struct TaskNode {
-//     int id;
-//     std::string name;
-//     TaskStatus status;
-//     int input_id;
-//     int output_id;
-// };
-
-// struct Link {
-//     int id;
-//     int from;
-//     int to;
-// };
-// TOCHANGE: only for example purposes
+static bool running = true;
 
 enum class NamedColor {
     Blue,
@@ -68,62 +54,39 @@ ImU32 ColorFromName(NamedColor color) {
     }
 }
 
-std::string getJsonFile(PathManager& pm, const EdenFileType& fileType, const std::string& filename) {
-    auto path = pm.getFilePath(fileType, filename);
-    if (!path) {
-        std::string label;
-        switch (fileType) {
-            case EdenFileType::Workflow: label = "Workflow"; break;
-            case EdenFileType::Config: label = "Config"; break;
-            default: label = "Unknown"; break;
-        }
-        throw MissingFileException(label, filename);
-    }
-    return path->string();
-}
+// nlohmann::json saveNodeLayout(const WorkflowUPtr& wf) {
+//     nlohmann::json j;
+//     for (auto& t : wf->tasks()) {
+//         ImVec2 pos = ImNodes::GetNodeEditorSpacePos(t.first);
+//         j["nodes"].push_back({
+//             {"id", t.first},
+//             {"x", pos.x},
+//             {"y", pos.y}
+//         });
+//     }
+//     return j;
+// }
 
-nlohmann::json saveNodeLayout(const WorkflowUPtr& wf) {
-    nlohmann::json j;
-    for (auto& t : wf->tasks()) {
-        ImVec2 pos = ImNodes::GetNodeEditorSpacePos(t.first);
-        j["nodes"].push_back({
-            {"id", t.first},
-            {"x", pos.x},
-            {"y", pos.y}
-        });
-    }
-    return j;
-}
-
-void loadNodeLayout(const nlohmann::json& j) {
-    if (!j.contains("nodes")) return;
-    for (const auto& node : j["nodes"]) {
-        int id = node["id"];
-        float x = node["x"];
-        float y = node["y"];
-        ImNodes::SetNodeEditorSpacePos(id, ImVec2(x, y));
-    }
-}
-
-// Optional: Save to file
-void saveLayoutToFile(const std::string& filename, const WorkflowUPtr& wf) {
-    if (!wf) return;
-
-    // wf->saveJsonFile(filename);
-    WorkflowSerializer serializer;
-    serializer.save(wf, filename);
-}
+// void loadNodeLayout(const nlohmann::json& j) {
+//     if (!j.contains("nodes")) return;
+//     for (const auto& node : j["nodes"]) {
+//         int id = node["id"];
+//         float x = node["x"];
+//         float y = node["y"];
+//         ImNodes::SetNodeEditorSpacePos(id, ImVec2(x, y));
+//     }
+// }
 
 // Optional: Load from file
-void loadLayoutFromFile(const std::string& filename) {
-    std::ifstream file(filename);
-    if (!file) return;
-    nlohmann::json j;
-    file >> j;
-    loadNodeLayout(j);
-}
+// void loadLayoutFromFile(const std::string& filename) {
+//     std::ifstream file(filename);
+//     if (!file) return;
+//     nlohmann::json j;
+//     file >> j;
+//     loadNodeLayout(j);
+// }
 
-WorkflowUPtr loadWorkflow() {
+WorkflowUPtr loadWorkflow(const std::string& jsonFile) {
     auto& log = LoggerManager::getInstance();
     log.addLogger(std::make_unique<LoggerConsole>(LOG_LEVEL::LOG_DEBUG));
     
@@ -139,8 +102,23 @@ WorkflowUPtr loadWorkflow() {
     ContextSPtr wfContext;
     WorkflowUPtr wf;
 
+    auto getJsonFile = [](PathManager& pm, const EdenFileType& fileType, const std::string& filename) -> std::string {
+        auto path = pm.getFilePath(fileType, filename);
+        if (!path) {
+            std::string label;
+            switch (fileType) {
+                case EdenFileType::Workflow: label = "Workflow"; break;
+                case EdenFileType::Config: label = "Config"; break;
+                default: label = "Unknown"; break;
+            }
+            throw MissingFileException(label, filename);
+        }
+        return path->string();
+    };
+
+
     try {
-        const auto workflowFile = getJsonFile(pathManager, EdenFileType::Workflow, "workflow_test.json");
+        const auto workflowFile = getJsonFile(pathManager, EdenFileType::Workflow, jsonFile);
         log.logInfo("Workflow file: {}", workflowFile);
     
         const auto contextFile = getJsonFile(pathManager, EdenFileType::Workflow, "context_test.json");
@@ -163,6 +141,65 @@ WorkflowUPtr loadWorkflow() {
     log.log("Workflow name: {} - COB: {}", wf->name(), strCob);
 
     return wf;
+}
+
+// Function to create the menu
+void ShowMenuBar(WorkflowUPtr& workflow) {
+    auto& log = LoggerManager::getInstance();
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Load Layout")) {
+                log.log("Load Layout button clicked");
+                IGFD::FileDialogConfig config;config.path = ".";
+		        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKeyLoad", "Choose File", ".json", config);
+            }
+            if (ImGui::MenuItem("Save Layout As...")) {
+                // Open the Save As dialog when clicked
+                // ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Save As", ".json", ".");
+                log.log("Save Layout button clicked");
+                IGFD::FileDialogConfig config;config.path = ".";
+		        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKeySave", "Choose File", ".json", config);
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Exit")) {
+                // Set running to false to exit the loop and close the app
+                running = false;
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+
+    // display
+    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKeyLoad")) {
+        log.log("File dialog displayed");
+    
+        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+            log.log("Selected file: {}", filePathName);
+            workflow = loadWorkflow(filePathName);
+        }
+    
+        // close
+        ImGuiFileDialog::Instance()->Close();
+    }
+
+    // display
+    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKeySave")) {
+        log.log("File dialog displayed");
+    
+        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+            log.log("Selected file: {}", filePathName);
+            WorkflowSerializer serializer;
+            serializer.save(workflow, filePathName);
+            log.log("Workflow saved to file: {}", filePathName);
+        }
+    
+        ImGuiFileDialog::Instance()->Close();
+    }
 }
 
 void ShowWorkflowEditor(WorkflowUPtr& workflow) {
@@ -225,65 +262,9 @@ void ShowWorkflowEditor(WorkflowUPtr& workflow) {
     }
 
     ImNodes::EndNodeEditor();
+    
     ImGui::End();
 }
-
-// void ShowWorkflowEditorExample(std::vector<TaskNode>& nodes, std::vector<Link>& links) {
-//     ImGui::Begin("Workflow Editor");
-//     ImNodes::BeginNodeEditor();
-
-//     for (const auto& node : nodes) {
-
-//         // Optional: style by task status
-//         switch (node.status) {
-//             case TaskStatus::Done:
-//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGreen));
-//                 break;
-//             case TaskStatus::Running:
-//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightOrange));
-//                 break;
-//             case TaskStatus::Failed:
-//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightRed));
-//                 break;
-//             default:
-//                 ImNodes::PushColorStyle(ImNodesCol_TitleBar, ColorFromName(NamedColor::LightGrey));
-//                 break;
-//         }
-
-//         ImNodes::BeginNode(node.id);
-
-//         // This needs to be called once 
-//         static bool layoutOnce = true;
-//         if (layoutOnce) {
-//             for (const auto& node : nodes) {
-//                 ImNodes::SetNodeEditorSpacePos(node.id, ImVec2(300.0f * node.id, 100.0f + 50.0f * node.id));
-//             }
-//             layoutOnce = false;
-//         }
-
-//         ImNodes::BeginNodeTitleBar();
-//         ImGui::TextUnformatted(node.name.c_str());
-//         ImNodes::EndNodeTitleBar();
-
-//         ImNodes::BeginInputAttribute(node.input_id);
-//         ImGui::Text("In");
-//         ImNodes::EndInputAttribute();
-
-//         ImNodes::BeginOutputAttribute(node.output_id);
-//         ImGui::Text("Out");
-//         ImNodes::EndOutputAttribute();
-
-//         ImNodes::EndNode();
-//         ImNodes::PopColorStyle();
-//     }
-
-//     for (const auto& link : links) {
-//         ImNodes::Link(link.id, link.from, link.to);
-//     }
-
-//     ImNodes::EndNodeEditor();
-//     ImGui::End();
-// }
 
 int main(int, char**) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -302,27 +283,14 @@ int main(int, char**) {
     ImGui::CreateContext();
     ImNodes::CreateContext();
     // ImGuiIO& io = ImGui::GetIO();
-    ImGui::StyleColorsDark();
+    // ImGui::StyleColorsDark();
+    ImGui::StyleColorsLight();
 
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init("#version 150");
 
-    // std::vector<TaskNode> nodes = {
-    //     {1, "Load Market Data", TaskStatus::Done, 10, 11},
-    //     {2, "Calibrate Market Data", TaskStatus::Running, 20, 21},
-    //     {3, "Compute PV", TaskStatus::Pending, 30, 31},
-    //     {4, "Save PV", TaskStatus::Pending, 40, 41}
-    // };
-    
-    // std::vector<Link> links = {
-    //     {1, 11, 20},  // Load Market Data → Calibrate Market Data
-    //     {2, 21, 30},  // Calibrate Market Data → Compute PV
-    //     {3, 31, 40}   // Compute PV → Save PV
-    // };
+    auto workflow = loadWorkflow("workflow_test.json");
 
-    auto workflow = loadWorkflow();
-
-    bool running = true;
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -335,16 +303,10 @@ int main(int, char**) {
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        // ShowWorkflowEditorExample(nodes, links);
-        ShowWorkflowEditor(workflow);
+        // Show the menu bar
+        ShowMenuBar(workflow);
 
-        if (ImGui::Button("Save Layout")) {
-            saveLayoutToFile("layout.json", workflow);
-        }
-        
-        if (ImGui::Button("Load Layout")) {
-            // workflow = loadLayoutFromFile("layout.json");
-        }
+        ShowWorkflowEditor(workflow);
 
         ImGui::Render();
         glViewport(0, 0, 1280, 720);
